@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EVM Wallet Connect (Ethereum + L2)</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --bg-soft: #131b34;
+      --panel: #172244;
+      --text: #eaf0ff;
+      --muted: #9fb2d4;
+      --ok: #4cd97b;
+      --warn: #f0b429;
+      --line: #28417a;
+      --btn: #2f6fed;
+      --btn-hover: #275ed1;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 20% 0%, #1d2f5e 0%, transparent 60%),
+        radial-gradient(900px 500px at 100% 20%, #0f3b50 0%, transparent 55%),
+        linear-gradient(180deg, var(--bg), #070a13);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: min(880px, 100%);
+      background: linear-gradient(180deg, #16264d 0%, #111b36 100%);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 20px 70px rgba(0, 0, 0, 0.45);
+      overflow: hidden;
+    }
+
+    .header {
+      padding: 24px 24px 8px;
+    }
+
+    .title {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .content {
+      padding: 20px 24px 24px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    button,
+    select {
+      appearance: none;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: var(--panel);
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    button {
+      cursor: pointer;
+      background: var(--btn);
+      border: none;
+      transition: background-color 0.15s ease;
+      font-weight: 600;
+    }
+
+    button:hover {
+      background: var(--btn-hover);
+    }
+
+    button.secondary {
+      background: #31487d;
+    }
+
+    button.secondary:hover {
+      background: #2b3f6e;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: rgba(16, 31, 66, 0.7);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #7788af;
+    }
+
+    .dot.ok {
+      background: var(--ok);
+    }
+
+    .dot.warn {
+      background: var(--warn);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: rgba(14, 24, 50, 0.75);
+    }
+
+    .label {
+      margin: 0 0 6px;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .value {
+      margin: 0;
+      word-break: break-all;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .log {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: rgba(11, 18, 38, 0.8);
+      color: #c9d7f8;
+      font-family: Consolas, Menlo, Monaco, monospace;
+      font-size: 12px;
+      min-height: 56px;
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+
+    .hint {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <section class="header">
+      <h1 class="title">Ethereum + L2 Wallet Connect</h1>
+      <p class="subtitle">
+        Connect any EVM wallet (MetaMask, Rabby, OKX, Bitget, etc.), then switch to Ethereum mainnet or common L2 networks.
+      </p>
+    </section>
+
+    <section class="content">
+      <div class="row">
+        <button id="connectBtn">Connect Wallet</button>
+        <button id="refreshBtn" class="secondary">Refresh</button>
+        <button id="diagnoseBtn" class="secondary">Diagnose</button>
+        <span id="walletStatus" class="status-pill"><span class="dot warn"></span>Wallet not connected</span>
+      </div>
+
+      <div class="row">
+        <select id="networkSelect"></select>
+        <button id="switchBtn">Switch / Add Network</button>
+      </div>
+
+      <div class="grid">
+        <div class="panel">
+          <p class="label">Address</p>
+          <p id="addressValue" class="value">-</p>
+        </div>
+        <div class="panel">
+          <p class="label">Current Chain</p>
+          <p id="chainValue" class="value">-</p>
+        </div>
+        <div class="panel">
+          <p class="label">ETH Balance</p>
+          <p id="balanceValue" class="value">-</p>
+        </div>
+        <div class="panel">
+          <p class="label">Provider Debug</p>
+          <p id="providerDebugValue" class="value">-</p>
+        </div>
+      </div>
+
+      <pre id="logBox" class="log">Ready.</pre>
+      <p class="hint">Tip: do not open from file:// . Use localhost (for example, run start-localhost.bat).</p>
+    </section>
+  </main>
+
+  <script>
+    const NETWORKS = [
+      {
+        label: "Ethereum Mainnet",
+        chainId: "0x1",
+        l2: false,
+        params: {
+          chainId: "0x1",
+          chainName: "Ethereum Mainnet",
+          nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+          rpcUrls: ["https://rpc.ankr.com/eth"],
+          blockExplorerUrls: ["https://etherscan.io"]
+        }
+      },
+      {
+        label: "Arbitrum One (L2)",
+        chainId: "0xa4b1",
+        l2: true,
+        params: {
+          chainId: "0xa4b1",
+          chainName: "Arbitrum One",
+          nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+          rpcUrls: ["https://arb1.arbitrum.io/rpc"],
+          blockExplorerUrls: ["https://arbiscan.io"]
+        }
+      },
+      {
+        label: "Optimism (L2)",
+        chainId: "0xa",
+        l2: true,
+        params: {
+          chainId: "0xa",
+          chainName: "OP Mainnet",
+          nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+          rpcUrls: ["https://mainnet.optimism.io"],
+          blockExplorerUrls: ["https://optimistic.etherscan.io"]
+        }
+      },
+      {
+        label: "Base (L2)",
+        chainId: "0x2105",
+        l2: true,
+        params: {
+          chainId: "0x2105",
+          chainName: "Base",
+          nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+          rpcUrls: ["https://mainnet.base.org"],
+          blockExplorerUrls: ["https://basescan.org"]
+        }
+      },
+      {
+        label: "zkSync Era (L2)",
+        chainId: "0x144",
+        l2: true,
+        params: {
+          chainId: "0x144",
+          chainName: "zkSync Era Mainnet",
+          nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+          rpcUrls: ["https://mainnet.era.zksync.io"],
+          blockExplorerUrls: ["https://explorer.zksync.io"]
+        }
+      },
+      {
+        label: "Linea (L2)",
+        chainId: "0xe708",
+        l2: true,
+        params: {
+          chainId: "0xe708",
+          chainName: "Linea",
+          nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+          rpcUrls: ["https://rpc.linea.build"],
+          blockExplorerUrls: ["https://lineascan.build"]
+        }
+      }
+    ];
+
+    const connectBtn = document.getElementById("connectBtn");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const diagnoseBtn = document.getElementById("diagnoseBtn");
+    const switchBtn = document.getElementById("switchBtn");
+    const networkSelect = document.getElementById("networkSelect");
+    const walletStatus = document.getElementById("walletStatus");
+    const addressValue = document.getElementById("addressValue");
+    const chainValue = document.getElementById("chainValue");
+    const balanceValue = document.getElementById("balanceValue");
+    const providerDebugValue = document.getElementById("providerDebugValue");
+    const logBox = document.getElementById("logBox");
+
+    let provider = null;
+    let providerName = "Unknown";
+    let boundProvider = null;
+    let eipDiscoveryReady = false;
+    const eip6963Providers = new Map();
+    let currentAccount = "";
+    let currentChainId = "";
+
+    function log(message) {
+      const stamp = new Date().toLocaleTimeString();
+      logBox.textContent = `[${stamp}] ${message}\n` + logBox.textContent;
+    }
+
+    function setStatus(text, connected) {
+      walletStatus.innerHTML = `<span class="dot ${connected ? "ok" : "warn"}"></span>${text}`;
+    }
+
+    function shortenAddress(address) {
+      if (!address) return "-";
+      return `${address.slice(0, 6)}...${address.slice(-4)}`;
+    }
+
+    function formatEther(weiHex) {
+      if (!weiHex) return "-";
+      const wei = BigInt(weiHex);
+      const base = 10n ** 18n;
+      const whole = wei / base;
+      const fraction = wei % base;
+      const fractionStr = fraction.toString().padStart(18, "0").slice(0, 5).replace(/0+$/, "");
+      return fractionStr ? `${whole.toString()}.${fractionStr} ETH` : `${whole.toString()} ETH`;
+    }
+
+    function findNetwork(chainId) {
+      return NETWORKS.find((n) => n.chainId.toLowerCase() === chainId.toLowerCase());
+    }
+
+    function getProviderName(p, info = null) {
+      if (info && info.name) return info.name;
+      if (!p) return "Unknown";
+      if (p.isMetaMask) return "MetaMask";
+      if (p.isRabby) return "Rabby";
+      if (p.isOkxWallet || p.isOKExWallet) return "OKX Wallet";
+      if (p.isBitKeep || p.isBitgetWallet) return "Bitget Wallet";
+      if (p.isCoinbaseWallet) return "Coinbase Wallet";
+      if (p.isTrust || p.isTrustWallet) return "Trust Wallet";
+      return "Injected EVM Wallet";
+    }
+
+    function toCandidate(providerItem, source, info = null) {
+      return {
+        provider: providerItem,
+        source,
+        info,
+        name: getProviderName(providerItem, info)
+      };
+    }
+
+    function registerEip6963Provider(detail) {
+      if (!detail || !detail.provider) return;
+      const info = detail.info || {};
+      const key = info.uuid || `${info.rdns || "unknown"}:${info.name || "wallet"}`;
+      if (!eip6963Providers.has(key)) {
+        eip6963Providers.set(key, { provider: detail.provider, info });
+      }
+    }
+
+    function setupEip6963Discovery() {
+      if (eipDiscoveryReady) return;
+      eipDiscoveryReady = true;
+      window.addEventListener("eip6963:announceProvider", (event) => {
+        registerEip6963Provider(event.detail);
+        updateProviderDebug();
+      });
+      window.dispatchEvent(new Event("eip6963:requestProvider"));
+    }
+
+    function collectProviderCandidates() {
+      const all = [];
+      const seen = new Set();
+
+      if (window.ethereum) {
+        const injected = Array.isArray(window.ethereum.providers) && window.ethereum.providers.length
+          ? window.ethereum.providers
+          : [window.ethereum];
+
+        injected.forEach((p) => {
+          if (p && !seen.has(p)) {
+            seen.add(p);
+            all.push(toCandidate(p, "injected"));
+          }
+        });
+      }
+
+      eip6963Providers.forEach((entry) => {
+        if (entry.provider && !seen.has(entry.provider)) {
+          seen.add(entry.provider);
+          all.push(toCandidate(entry.provider, "eip6963", entry.info));
+        }
+      });
+
+      return all;
+    }
+
+    function describeCandidates(candidates) {
+      if (!candidates.length) return "none";
+      return candidates
+        .map((item) => `${item.name} [${item.source}]`)
+        .join(", ");
+    }
+
+    function pickBestProvider() {
+      const candidates = collectProviderCandidates();
+      if (!candidates.length) return null;
+
+      const metamask = candidates.find((item) =>
+        (item.provider && item.provider.isMetaMask) ||
+        String(item.info && item.info.rdns ? item.info.rdns : "").toLowerCase().includes("metamask")
+      );
+
+      const chosenEntry = metamask || candidates[0];
+      return { chosen: chosenEntry.provider, chosenEntry, candidates };
+    }
+
+    function updateProviderDebug() {
+      const hasEthereum = Boolean(window.ethereum);
+      const injectedCount = hasEthereum
+        ? (Array.isArray(window.ethereum.providers) && window.ethereum.providers.length
+          ? window.ethereum.providers.filter(Boolean).length
+          : 1)
+        : 0;
+      providerDebugValue.textContent =
+        `window.ethereum=${hasEthereum ? "yes" : "no"} | injected=${injectedCount} | eip6963=${eip6963Providers.size}`;
+    }
+
+    async function waitForInjectedProvider(timeoutMs = 4500) {
+      setupEip6963Discovery();
+      updateProviderDebug();
+
+      const immediate = pickBestProvider();
+      if (immediate) return immediate;
+
+      return new Promise((resolve) => {
+        let done = false;
+        const finalize = (result) => {
+          if (done) return;
+          done = true;
+          window.removeEventListener("ethereum#initialized", onInitialized);
+          window.removeEventListener("eip6963:announceProvider", onAnnounce);
+          clearTimeout(timer);
+          resolve(result);
+        };
+
+        const onInitialized = () => finalize(pickBestProvider());
+        const onAnnounce = () => finalize(pickBestProvider());
+
+        window.addEventListener("ethereum#initialized", onInitialized, { once: true });
+        window.addEventListener("eip6963:announceProvider", onAnnounce);
+        window.dispatchEvent(new Event("eip6963:requestProvider"));
+        setTimeout(() => window.dispatchEvent(new Event("eip6963:requestProvider")), 300);
+
+        const timer = setTimeout(() => finalize(pickBestProvider()), timeoutMs);
+      });
+    }
+
+    async function detectProvider(showNotFoundLog = true) {
+      const picked = await waitForInjectedProvider(4500);
+      updateProviderDebug();
+
+      if (picked) {
+        provider = picked.chosen;
+        providerName = picked.chosenEntry.name || getProviderName(provider);
+        const total = picked.candidates.length;
+        log(`Provider selected: ${providerName}${total > 1 ? ` (${total} found)` : ""}.`);
+        return true;
+      }
+
+      if (showNotFoundLog) {
+        setStatus("No EVM wallet found", false);
+        log("No provider found from window.ethereum or EIP-6963.");
+        log(`Candidates: ${describeCandidates(collectProviderCandidates())}`);
+        if (window.location && window.location.protocol === "file:") {
+          log("You are opening this page with file:// . Use localhost (python -m http.server 8080).");
+        } else if (window.location) {
+          log(`Current origin: ${window.location.origin || "unknown origin"}`);
+        }
+      }
+      return false;
+    }
+
+    function runDiagnostics() {
+      setupEip6963Discovery();
+      updateProviderDebug();
+      const candidates = collectProviderCandidates();
+      log(`Diagnostic origin: ${window.location.origin || "unknown"}; secure=${window.isSecureContext}`);
+      log(`Diagnostic providers: ${describeCandidates(candidates)}`);
+    }
+
+    async function syncAccountAndChain() {
+      if (!provider) return;
+      const accounts = await provider.request({ method: "eth_accounts" });
+      currentAccount = accounts[0] || "";
+      currentChainId = await provider.request({ method: "eth_chainId" });
+
+      if (currentAccount) {
+        setStatus("Wallet connected", true);
+      } else {
+        setStatus("Wallet not connected", false);
+      }
+
+      const network = findNetwork(currentChainId);
+      const chainText = network
+        ? `${network.label} (${currentChainId})`
+        : `Unknown EVM chain (${currentChainId})`;
+
+      addressValue.textContent = currentAccount ? `${shortenAddress(currentAccount)} (${currentAccount})` : "-";
+      chainValue.textContent = chainText;
+
+      if (currentAccount) {
+        const balance = await provider.request({
+          method: "eth_getBalance",
+          params: [currentAccount, "latest"]
+        });
+        balanceValue.textContent = formatEther(balance);
+      } else {
+        balanceValue.textContent = "-";
+      }
+    }
+
+    async function connectWallet() {
+      try {
+        const ok = await detectProvider();
+        if (!ok) return;
+
+        bindProviderEvents();
+        await provider.request({ method: "eth_requestAccounts" });
+        await syncAccountAndChain();
+        log(`Wallet connected successfully via ${providerName}.`);
+      } catch (error) {
+        if (error && error.code === 4001) {
+          log("Connect canceled in wallet popup (error 4001).");
+          return;
+        }
+        if (error && error.code === -32002) {
+          log("A connection request is already pending in your wallet. Open MetaMask and finish/close it first.");
+          return;
+        }
+        log(`Connect failed${error && error.code ? ` (code ${error.code})` : ""}: ${error.message || error}`);
+      }
+    }
+
+    async function switchOrAddNetwork() {
+      if (!provider) {
+        const ok = await detectProvider();
+        if (!ok) return;
+      }
+
+      const index = Number(networkSelect.value);
+      const target = NETWORKS[index];
+      if (!target) return;
+
+      try {
+        await provider.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: target.chainId }]
+        });
+        log(`Switched to ${target.label}.`);
+      } catch (switchError) {
+        const code = switchError && switchError.code;
+        if (code === 4902 || String(switchError.message || "").toLowerCase().includes("unrecognized chain")) {
+          try {
+            await provider.request({
+              method: "wallet_addEthereumChain",
+              params: [target.params]
+            });
+            log(`Network added and switched: ${target.label}.`);
+          } catch (addError) {
+            log(`Add network failed: ${addError.message || addError}`);
+            return;
+          }
+        } else {
+          log(`Switch failed: ${switchError.message || switchError}`);
+          return;
+        }
+      }
+
+      await syncAccountAndChain();
+    }
+
+    function bindProviderEvents() {
+      if (!provider || !provider.on || boundProvider === provider) return;
+      provider.on("accountsChanged", async () => {
+        await syncAccountAndChain();
+        log("Account changed.");
+      });
+      provider.on("chainChanged", async () => {
+        await syncAccountAndChain();
+        log("Chain changed.");
+      });
+      boundProvider = provider;
+    }
+
+    function renderNetworkSelect() {
+      NETWORKS.forEach((network, index) => {
+        const option = document.createElement("option");
+        option.value = String(index);
+        option.textContent = network.label;
+        networkSelect.appendChild(option);
+      });
+    }
+
+    async function init() {
+      renderNetworkSelect();
+      setupEip6963Discovery();
+      updateProviderDebug();
+      const hasProvider = await detectProvider(false);
+      if (hasProvider) {
+        bindProviderEvents();
+        await syncAccountAndChain();
+        log("EVM wallet provider detected.");
+      } else {
+        log("No wallet detected on initial load. Click Connect after unlocking MetaMask.");
+      }
+    }
+
+    connectBtn.addEventListener("click", connectWallet);
+    switchBtn.addEventListener("click", switchOrAddNetwork);
+    diagnoseBtn.addEventListener("click", runDiagnostics);
+    refreshBtn.addEventListener("click", async () => {
+      try {
+        updateProviderDebug();
+        await syncAccountAndChain();
+        log("Refreshed wallet state.");
+      } catch (error) {
+        log(`Refresh failed: ${error.message || error}`);
+      }
+    });
+
+    init().catch((error) => {
+      log(`Init error: ${error.message || error}`);
+    });
+  </script>
+</body>
+</html>

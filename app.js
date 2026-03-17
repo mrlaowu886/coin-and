@@ -28,6 +28,24 @@ const I18N = {
     labelCurrentChain: "当前网络",
     labelNativeBalance: "原生代币余额",
     labelProviderDebug: "钱包调试",
+    contributionTitle: "贡献值 TOKEN（BSC）",
+    contributionDesc: "每个地址可领取 100；通过邀请链接成功邀请新地址领取后，邀请人获得 50。贡献值不可转账，仅用于平台贡献记录。",
+    labelContractAddress: "合约地址",
+    placeholderContractAddress: "输入 ContributionToken 合约地址（0x...）",
+    btnSaveContract: "保存合约地址",
+    btnClaim: "领取 100 贡献值",
+    btnClaimed: "已领取",
+    btnClaiming: "领取中...",
+    btnCopyInviteLink: "复制邀请链接",
+    labelContributionBalance: "贡献值余额",
+    labelClaimState: "领取状态",
+    labelInviteRef: "当前邀请人",
+    labelInviteLink: "我的邀请链接",
+    claimStateClaimed: "已领取",
+    claimStateUnclaimed: "未领取",
+    claimStateNeedContract: "未配置合约",
+    inviteRefNone: "无邀请人",
+    inviteLinkNotReady: "领取后自动生成",
     hintLocalhost: "提示：请勿通过 file:// 打开。请使用 localhost 或线上 HTTPS 域名。",
     ready: "准备就绪。",
     yes: "是",
@@ -66,7 +84,26 @@ const I18N = {
     logCannotReadNetwork: "无法读取网络偏好：{message}",
     logAddressCopied: "地址已复制到剪贴板。",
     logAddressCopyFailed: "复制地址失败：{message}",
-    logAddressCopyNotAvailable: "当前环境不支持复制地址。"
+    logAddressCopyNotAvailable: "当前环境不支持复制地址。",
+    logContractSaved: "贡献值合约地址已保存：{address}",
+    logContractCleared: "已清空贡献值合约地址。",
+    logContractInvalid: "合约地址无效，请输入正确的 0x 地址。",
+    logContractMissing: "请先填写并保存贡献值合约地址。",
+    logEthersMissing: "未加载 ethers.js，无法调用合约。",
+    logNeedWalletBeforeClaim: "请先连接钱包后再领取贡献值。",
+    logNeedBscBeforeClaim: "请先切换到 BSC 主网后再领取。",
+    logContributionRefreshed: "贡献值状态已刷新。",
+    logContributionRefreshFailed: "读取贡献值状态失败：{message}",
+    logInviteRefDetected: "已检测到邀请人：{referrer}",
+    logInviteRefIgnored: "邀请人地址无效或为当前地址，已忽略。",
+    logClaimTxSubmitted: "领取交易已提交：{hash}",
+    logClaimSuccess: "贡献值领取成功。",
+    logClaimFailed: "领取失败：{message}",
+    logAlreadyClaimedOnChain: "链上显示该地址已领取过。",
+    logInviteCopied: "邀请链接已复制。",
+    logInviteCopyNotReady: "当前还没有可复制的邀请链接。",
+    logInviteManualCopy: "浏览器限制了自动复制，已弹出手动复制框。",
+    promptCopyInvite: "请复制邀请链接（Ctrl+C）"
   },
   en: {
     appTitle: "BSC Wallet Connect",
@@ -95,6 +132,24 @@ const I18N = {
     labelCurrentChain: "Current Chain",
     labelNativeBalance: "Native Balance",
     labelProviderDebug: "Provider Debug",
+    contributionTitle: "Contribution Token (BSC)",
+    contributionDesc: "Each address can claim 100. If an invited user claims successfully via your link, the inviter gets 50. This token is non-transferable and used only as platform contribution score.",
+    labelContractAddress: "Contract Address",
+    placeholderContractAddress: "Enter ContributionToken address (0x...)",
+    btnSaveContract: "Save Contract",
+    btnClaim: "Claim 100",
+    btnClaimed: "Claimed",
+    btnClaiming: "Claiming...",
+    btnCopyInviteLink: "Copy Invite Link",
+    labelContributionBalance: "Contribution Balance",
+    labelClaimState: "Claim Status",
+    labelInviteRef: "Current Referrer",
+    labelInviteLink: "My Invite Link",
+    claimStateClaimed: "Claimed",
+    claimStateUnclaimed: "Unclaimed",
+    claimStateNeedContract: "Contract not set",
+    inviteRefNone: "No referrer",
+    inviteLinkNotReady: "Will be generated after claim",
     hintLocalhost: "Tip: do not open from file:// . Use localhost or an HTTPS domain.",
     ready: "Ready.",
     yes: "yes",
@@ -133,7 +188,26 @@ const I18N = {
     logCannotReadNetwork: "Cannot read saved network: {message}",
     logAddressCopied: "Address copied to clipboard.",
     logAddressCopyFailed: "Copy failed: {message}",
-    logAddressCopyNotAvailable: "Copy is not available in this environment."
+    logAddressCopyNotAvailable: "Copy is not available in this environment.",
+    logContractSaved: "Contribution contract saved: {address}",
+    logContractCleared: "Contribution contract cleared.",
+    logContractInvalid: "Invalid contract address. Please input a valid 0x address.",
+    logContractMissing: "Please set and save the contribution contract address first.",
+    logEthersMissing: "ethers.js is not loaded. Contract calls are unavailable.",
+    logNeedWalletBeforeClaim: "Connect wallet before claiming.",
+    logNeedBscBeforeClaim: "Please switch to BSC mainnet before claiming.",
+    logContributionRefreshed: "Contribution state refreshed.",
+    logContributionRefreshFailed: "Failed to load contribution state: {message}",
+    logInviteRefDetected: "Referrer detected: {referrer}",
+    logInviteRefIgnored: "Referrer is invalid or same as current account; ignored.",
+    logClaimTxSubmitted: "Claim transaction submitted: {hash}",
+    logClaimSuccess: "Claim completed successfully.",
+    logClaimFailed: "Claim failed: {message}",
+    logAlreadyClaimedOnChain: "This address has already claimed on-chain.",
+    logInviteCopied: "Invite link copied.",
+    logInviteCopyNotReady: "No invite link available to copy yet.",
+    logInviteManualCopy: "Auto-copy is blocked by browser; opened manual copy dialog.",
+    promptCopyInvite: "Copy invite link (Ctrl+C)"
   }
 };
 
@@ -674,7 +748,18 @@ const REQUIRED_NETWORK = ACTIVE_NETWORKS[0] || null;
 
 const LANG_PREF_KEY = "wallet-connect:lang-pref";
 const LAST_NETWORK_KEY = "wallet-connect:last-network";
+const CONTRIBUTION_CONTRACT_KEY = "wallet-connect:contribution-contract";
 const MAX_LOG_LINES = 120;
+const DEFAULT_CONTRIBUTION_CONTRACT = "";
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+const CONTRIBUTION_TOKEN_ABI = [
+  "function hasClaimed(address user) view returns (bool)",
+  "function inviterOf(address user) view returns (address)",
+  "function balanceOf(address account) view returns (uint256)",
+  "function claim(address referrer)",
+  "function claimAmount() view returns (uint256)",
+  "function inviteReward() view returns (uint256)"
+];
 
 const langSwitch = document.getElementById("langSwitch");
 const langSelectLabel = document.getElementById("langSelectLabel");
@@ -687,6 +772,20 @@ const chainLabel = document.getElementById("chainLabel");
 const balanceLabel = document.getElementById("balanceLabel");
 const providerDebugLabel = document.getElementById("providerDebugLabel");
 const hintText = document.getElementById("hintText");
+const contributionTitle = document.getElementById("contributionTitle");
+const contributionDesc = document.getElementById("contributionDesc");
+const contractAddressInput = document.getElementById("contractAddressInput");
+const saveContractBtn = document.getElementById("saveContractBtn");
+const claimBtn = document.getElementById("claimBtn");
+const copyInviteBtn = document.getElementById("copyInviteBtn");
+const contributionBalanceLabel = document.getElementById("contributionBalanceLabel");
+const claimStateLabel = document.getElementById("claimStateLabel");
+const inviteRefLabel = document.getElementById("inviteRefLabel");
+const inviteLinkLabel = document.getElementById("inviteLinkLabel");
+const contributionBalanceValue = document.getElementById("contributionBalanceValue");
+const claimStateValue = document.getElementById("claimStateValue");
+const inviteRefValue = document.getElementById("inviteRefValue");
+const inviteLinkValue = document.getElementById("inviteLinkValue");
 
 const connectBtn = document.getElementById("connectBtn");
 const refreshBtn = document.getElementById("refreshBtn");
@@ -702,8 +801,10 @@ const chainValue = document.getElementById("chainValue");
 const balanceValue = document.getElementById("balanceValue");
 const providerDebugValue = document.getElementById("providerDebugValue");
 const logBox = document.getElementById("logBox");
+const toastBox = document.getElementById("toast");
 
 const logLines = [];
+let toastTimer = null;
 
 let currentLangPref = "auto";
 let currentLang = "zh";
@@ -716,6 +817,10 @@ const eip6963Providers = new Map();
 let currentAccount = "";
 let currentChainId = "";
 let lastStatus = { key: "statusNotConnected", connected: false, vars: {} };
+let contributionContractAddress = DEFAULT_CONTRIBUTION_CONTRACT;
+let contributionHasClaimed = false;
+let inviteLinkCache = "";
+let pendingReferrer = "";
 
 function t(key, vars = {}) {
   const table = I18N[currentLang] || I18N.zh;
@@ -875,6 +980,10 @@ function applyLanguage() {
   balanceLabel.textContent = t("labelNativeBalance");
   providerDebugLabel.textContent = t("labelProviderDebug");
   hintText.textContent = t("hintLocalhost");
+  updateContributionStaticText();
+  if (contributionContractAddress) {
+    contractAddressInput.value = contributionContractAddress;
+  }
 
   setButtonLabel(refreshBtn, t("btnRefresh"));
   setButtonLabel(diagnoseBtn, t("btnDiagnose"));
@@ -890,6 +999,7 @@ function applyLanguage() {
   } else {
     selectNetworkByChainId(currentChainId);
   }
+  updateContributionDisplayFallback();
   refreshStatusText();
   updateActionState();
   updateProviderDebug();
@@ -930,6 +1040,19 @@ function clearLog() {
   logBox.textContent = t("ready");
 }
 
+function showToast(message) {
+  if (!toastBox || !message) return;
+  toastBox.textContent = String(message);
+  toastBox.classList.add("show");
+  if (toastTimer) {
+    clearTimeout(toastTimer);
+  }
+  toastTimer = setTimeout(() => {
+    toastBox.classList.remove("show");
+    toastTimer = null;
+  }, 1800);
+}
+
 function shortenAddress(address) {
   if (!address) return "-";
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -960,8 +1083,20 @@ function getExplorerBase(chainId) {
 
 function updateActionState() {
   const hasAccount = Boolean(currentAccount);
+  const onRequiredNetwork = !REQUIRED_NETWORK
+    || (currentChainId && currentChainId.toLowerCase() === REQUIRED_NETWORK.chainId.toLowerCase());
+  const canClaim = hasAccount
+    && onRequiredNetwork
+    && Boolean(contributionContractAddress)
+    && !contributionHasClaimed;
+
   copyBtn.disabled = !hasAccount;
   explorerBtn.disabled = !hasAccount;
+  setButtonLabel(claimBtn, contributionHasClaimed ? t("btnClaimed") : t("btnClaim"));
+  if (claimBtn.dataset.busy !== "1") {
+    claimBtn.disabled = !canClaim;
+  }
+  copyInviteBtn.disabled = !hasAccount || !contributionContractAddress;
   setButtonLabel(connectBtn, hasAccount ? t("btnReconnect") : t("btnConnect"));
 }
 
@@ -1025,11 +1160,280 @@ function getErrorMessage(error) {
   return msg || JSON.stringify(error);
 }
 
+function hasEthersSdk() {
+  return Boolean(
+    window.ethers
+    && window.ethers.BrowserProvider
+    && window.ethers.Contract
+    && window.ethers.getAddress
+  );
+}
+
+function normalizeAddress(raw) {
+  const input = String(raw || "").trim();
+  if (!input) return "";
+  if (hasEthersSdk()) {
+    try {
+      return window.ethers.getAddress(input);
+    } catch (error) {
+      return "";
+    }
+  }
+  return /^0x[a-fA-F0-9]{40}$/.test(input) ? input : "";
+}
+
+function loadContributionContractAddress() {
+  try {
+    const saved = localStorage.getItem(CONTRIBUTION_CONTRACT_KEY) || "";
+    return normalizeAddress(saved) || DEFAULT_CONTRIBUTION_CONTRACT;
+  } catch (error) {
+    return DEFAULT_CONTRIBUTION_CONTRACT;
+  }
+}
+
+function persistContributionContractAddress(address) {
+  try {
+    if (!address) {
+      localStorage.removeItem(CONTRIBUTION_CONTRACT_KEY);
+    } else {
+      localStorage.setItem(CONTRIBUTION_CONTRACT_KEY, address);
+    }
+  } catch (error) {
+    // ignore storage failures
+  }
+}
+
+function parseReferrerFromUrl() {
+  if (!window.location || !window.location.search) return "";
+  const params = new URLSearchParams(window.location.search);
+  const ref = normalizeAddress(params.get("ref") || "");
+  return ref || "";
+}
+
+function parseContractFromUrl() {
+  if (!window.location || !window.location.search) return "";
+  const params = new URLSearchParams(window.location.search);
+  const fromUrl = normalizeAddress(params.get("contract") || "");
+  return fromUrl || "";
+}
+
+function buildInviteLink(address) {
+  const normalized = normalizeAddress(address);
+  if (!normalized || !window.location) return "";
+  const url = new URL(window.location.href);
+  url.searchParams.set("ref", normalized);
+  return url.toString();
+}
+
+function updateContributionStaticText() {
+  contributionTitle.textContent = t("contributionTitle");
+  contributionDesc.textContent = t("contributionDesc");
+  contributionBalanceLabel.textContent = t("labelContributionBalance");
+  claimStateLabel.textContent = t("labelClaimState");
+  inviteRefLabel.textContent = t("labelInviteRef");
+  inviteLinkLabel.textContent = t("labelInviteLink");
+  contractAddressInput.placeholder = t("placeholderContractAddress");
+  contractAddressInput.setAttribute("aria-label", t("labelContractAddress"));
+  setButtonLabel(saveContractBtn, t("btnSaveContract"));
+  setButtonLabel(claimBtn, t("btnClaim"));
+  setButtonLabel(copyInviteBtn, t("btnCopyInviteLink"));
+}
+
+function updateContributionDisplayFallback() {
+  inviteRefValue.textContent = pendingReferrer || t("inviteRefNone");
+  if (!contributionContractAddress) {
+    claimStateValue.textContent = t("claimStateNeedContract");
+    contributionBalanceValue.textContent = "-";
+    inviteLinkCache = "";
+    inviteLinkValue.textContent = t("inviteLinkNotReady");
+    contributionHasClaimed = false;
+    return;
+  }
+
+  if (!currentAccount) {
+    claimStateValue.textContent = "-";
+    contributionBalanceValue.textContent = "-";
+    inviteLinkCache = "";
+    inviteLinkValue.textContent = t("inviteLinkNotReady");
+    contributionHasClaimed = false;
+    return;
+  }
+
+  claimStateValue.textContent = contributionHasClaimed ? t("claimStateClaimed") : t("claimStateUnclaimed");
+  if (inviteLinkCache) {
+    inviteLinkValue.textContent = inviteLinkCache;
+  } else {
+    inviteLinkValue.textContent = t("inviteLinkNotReady");
+  }
+}
+
+function createReadContract() {
+  if (!provider || !contributionContractAddress || !hasEthersSdk()) return null;
+  const browserProvider = new window.ethers.BrowserProvider(provider);
+  return new window.ethers.Contract(contributionContractAddress, CONTRIBUTION_TOKEN_ABI, browserProvider);
+}
+
+async function createWriteContract() {
+  if (!provider || !contributionContractAddress || !hasEthersSdk()) return null;
+  const browserProvider = new window.ethers.BrowserProvider(provider);
+  const signer = await browserProvider.getSigner();
+  return new window.ethers.Contract(contributionContractAddress, CONTRIBUTION_TOKEN_ABI, signer);
+}
+
+async function refreshContributionState({ silent = true } = {}) {
+  try {
+    updateContributionDisplayFallback();
+    if (!provider || !contributionContractAddress || !currentAccount) {
+      return;
+    }
+    if (!hasEthersSdk()) {
+      if (!silent) logT("logEthersMissing");
+      return;
+    }
+
+    const contract = createReadContract();
+    if (!contract) return;
+
+    const [balanceRaw, claimedRaw, inviterRaw] = await Promise.all([
+      contract.balanceOf(currentAccount),
+      contract.hasClaimed(currentAccount),
+      contract.inviterOf(currentAccount)
+    ]);
+    contributionHasClaimed = Boolean(claimedRaw);
+    contributionBalanceValue.textContent = balanceRaw.toString();
+    claimStateValue.textContent = contributionHasClaimed ? t("claimStateClaimed") : t("claimStateUnclaimed");
+    const inviter = normalizeAddress(inviterRaw);
+    if (inviter && inviter.toLowerCase() !== ZERO_ADDRESS.toLowerCase()) {
+      inviteRefValue.textContent = inviter;
+    } else {
+      inviteRefValue.textContent = pendingReferrer || t("inviteRefNone");
+    }
+
+    if (contributionHasClaimed) {
+      inviteLinkCache = buildInviteLink(currentAccount);
+      inviteLinkValue.textContent = inviteLinkCache || t("inviteLinkNotReady");
+    } else {
+      inviteLinkCache = "";
+      inviteLinkValue.textContent = t("inviteLinkNotReady");
+    }
+
+    if (!silent) {
+      logT("logContributionRefreshed");
+    }
+  } catch (error) {
+    contributionBalanceValue.textContent = "-";
+    claimStateValue.textContent = "-";
+    inviteLinkCache = "";
+    inviteLinkValue.textContent = t("inviteLinkNotReady");
+    if (!silent) {
+      logT("logContributionRefreshFailed", { message: getErrorMessage(error) });
+    }
+  } finally {
+    updateActionState();
+  }
+}
+
+function getClaimReferrer() {
+  if (!pendingReferrer) return ZERO_ADDRESS;
+  if (!currentAccount) return pendingReferrer;
+  if (pendingReferrer.toLowerCase() === currentAccount.toLowerCase()) {
+    return ZERO_ADDRESS;
+  }
+  return pendingReferrer;
+}
+
+async function saveContributionContractAddress() {
+  const normalized = normalizeAddress(contractAddressInput.value);
+  if (!contractAddressInput.value.trim()) {
+    contributionContractAddress = "";
+    persistContributionContractAddress("");
+    contractAddressInput.value = "";
+    updateContributionDisplayFallback();
+    updateActionState();
+    logT("logContractCleared");
+    return;
+  }
+  if (!normalized) {
+    logT("logContractInvalid");
+    return;
+  }
+
+  contributionContractAddress = normalized;
+  contractAddressInput.value = normalized;
+  persistContributionContractAddress(normalized);
+  logT("logContractSaved", { address: normalized });
+  await refreshContributionState({ silent: false });
+}
+
+async function claimContribution() {
+  if (!currentAccount) {
+    logT("logNeedWalletBeforeClaim");
+    return;
+  }
+  if (REQUIRED_NETWORK && (!currentChainId || currentChainId.toLowerCase() !== REQUIRED_NETWORK.chainId.toLowerCase())) {
+    logT("logNeedBscBeforeClaim");
+    return;
+  }
+  if (!contributionContractAddress) {
+    logT("logContractMissing");
+    return;
+  }
+  if (!hasEthersSdk()) {
+    logT("logEthersMissing");
+    return;
+  }
+
+  const referrer = getClaimReferrer();
+  if (pendingReferrer && referrer === ZERO_ADDRESS) {
+    logT("logInviteRefIgnored");
+  }
+
+  try {
+    setButtonBusy(claimBtn, true, t("btnClaiming"));
+    const readContract = createReadContract();
+    if (!readContract) {
+      logT("logContributionRefreshFailed", { message: "Missing contract connection" });
+      return;
+    }
+
+    const already = await readContract.hasClaimed(currentAccount);
+    if (already) {
+      contributionHasClaimed = true;
+      logT("logAlreadyClaimedOnChain");
+      await refreshContributionState({ silent: true });
+      return;
+    }
+
+    const writeContract = await createWriteContract();
+    if (!writeContract) {
+      logT("logContributionRefreshFailed", { message: "Missing signer" });
+      return;
+    }
+    const tx = await writeContract.claim(referrer || ZERO_ADDRESS);
+    logT("logClaimTxSubmitted", { hash: tx.hash });
+    await tx.wait();
+    contributionHasClaimed = true;
+    inviteLinkCache = buildInviteLink(currentAccount);
+    inviteLinkValue.textContent = inviteLinkCache || t("inviteLinkNotReady");
+    updateActionState();
+    logT("logClaimSuccess");
+    await refreshContributionState({ silent: true });
+  } catch (error) {
+    logT("logClaimFailed", { message: getErrorMessage(error) });
+  } finally {
+    setButtonBusy(claimBtn, false);
+  }
+}
+
 async function copyText(text) {
   if (!text) return false;
   if (navigator.clipboard && window.isSecureContext) {
-    await navigator.clipboard.writeText(text);
-    return true;
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (error) {
+      // Fall back to execCommand path below.
+    }
   }
   const textArea = document.createElement("textarea");
   textArea.value = text;
@@ -1042,6 +1446,16 @@ async function copyText(text) {
     return document.execCommand("copy");
   } finally {
     document.body.removeChild(textArea);
+  }
+}
+
+function openManualCopyPrompt(text) {
+  if (!text) return false;
+  try {
+    window.prompt(t("promptCopyInvite"), text);
+    return true;
+  } catch (error) {
+    return false;
   }
 }
 
@@ -1287,7 +1701,7 @@ async function syncAccountAndChain() {
   } else {
     balanceValue.textContent = "-";
   }
-  updateActionState();
+  await refreshContributionState({ silent: true });
 }
 
 async function connectWallet() {
@@ -1369,10 +1783,22 @@ function bindProviderEvents() {
 }
 
 async function init() {
+  const contractFromUrl = parseContractFromUrl();
+  contributionContractAddress = contractFromUrl || loadContributionContractAddress();
+  if (contractFromUrl) {
+    persistContributionContractAddress(contractFromUrl);
+  }
+  pendingReferrer = parseReferrerFromUrl();
   currentLangPref = loadLanguagePreference();
   currentLang = currentLangPref === "auto" ? detectSystemLang() : currentLangPref;
   applyLanguage();
   clearLog();
+  if (contributionContractAddress) {
+    contractAddressInput.value = contributionContractAddress;
+  }
+  if (pendingReferrer) {
+    logT("logInviteRefDetected", { referrer: pendingReferrer });
+  }
 
   setupEip6963Discovery();
   updateProviderDebug();
@@ -1393,6 +1819,54 @@ if (langSelect) {
     setLanguagePreference(String(event.target.value || "auto"));
   });
 }
+
+saveContractBtn.addEventListener("click", () => {
+  void saveContributionContractAddress();
+});
+contractAddressInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    void saveContributionContractAddress();
+  }
+});
+claimBtn.addEventListener("click", () => {
+  void claimContribution();
+});
+copyInviteBtn.addEventListener("click", async () => {
+  let targetLink = inviteLinkCache;
+  if (!targetLink && currentAccount && contributionContractAddress) {
+    targetLink = buildInviteLink(currentAccount);
+    if (targetLink) {
+      inviteLinkCache = targetLink;
+      inviteLinkValue.textContent = targetLink;
+    }
+  }
+  if (!targetLink) {
+    logT("logInviteCopyNotReady");
+    return;
+  }
+  try {
+    const copied = await copyText(targetLink);
+    if (copied) {
+      logT("logInviteCopied");
+      showToast(t("logInviteCopied"));
+    } else {
+      const opened = openManualCopyPrompt(targetLink);
+      if (opened) {
+        logT("logInviteManualCopy");
+      } else {
+        logT("logAddressCopyNotAvailable");
+      }
+    }
+  } catch (error) {
+    const opened = openManualCopyPrompt(targetLink);
+    if (opened) {
+      logT("logInviteManualCopy");
+    } else {
+      logT("logAddressCopyFailed", { message: getErrorMessage(error) });
+    }
+  }
+});
 
 connectBtn.addEventListener("click", connectWallet);
 switchBtn.addEventListener("click", switchOrAddNetwork);

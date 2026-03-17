@@ -151,7 +151,8 @@
     }
 
     button,
-    select {
+    select,
+    input {
       appearance: none;
       border: 1px solid var(--line);
       border-radius: 10px;
@@ -182,9 +183,14 @@
     }
 
     button:disabled,
-    select:disabled {
+    select:disabled,
+    input:disabled {
       opacity: 0.65;
       cursor: not-allowed;
+    }
+
+    input::placeholder {
+      color: #8fa4cd;
     }
 
     .status-pill {
@@ -227,6 +233,30 @@
       background: rgba(14, 24, 50, 0.75);
     }
 
+    .section-title {
+      margin: 0 0 6px;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .section-desc {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .input-grow {
+      flex: 1 1 320px;
+      min-width: 220px;
+    }
+
+    .mono {
+      font-family: Consolas, Menlo, Monaco, monospace;
+      font-size: 12px;
+    }
+
     .label {
       margin: 0 0 6px;
       font-size: 12px;
@@ -259,6 +289,39 @@
       margin: 0;
       font-size: 12px;
       color: var(--muted);
+    }
+
+    .toast {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      z-index: 2000;
+      max-width: min(88vw, 360px);
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(131, 186, 255, 0.75);
+      background: linear-gradient(180deg, rgba(31, 74, 171, 0.96), rgba(24, 56, 128, 0.96));
+      color: #eaf0ff;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.98);
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      text-align: center;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    @media (max-width: 640px) {
+      .toast {
+        max-width: min(92vw, 420px);
+      }
     }
   </style>
 </head>
@@ -294,6 +357,39 @@
         <button id="switchBtn">切换到 BSC</button>
       </div>
 
+      <section class="panel">
+        <h2 id="contributionTitle" class="section-title">贡献值 TOKEN（BSC）</h2>
+        <p id="contributionDesc" class="section-desc">
+          每个地址可领取 100；通过邀请链接成功邀请新地址领取后，邀请人获得 50。贡献值不可转账，仅用于平台贡献记录。
+        </p>
+        <div class="row" style="margin-top:10px;">
+          <input id="contractAddressInput" class="input-grow mono" type="text" placeholder="输入 ContributionToken 合约地址（0x...）" />
+          <button id="saveContractBtn" class="secondary">保存合约地址</button>
+        </div>
+        <div class="row">
+          <button id="claimBtn">领取 100 贡献值</button>
+          <button id="copyInviteBtn" class="secondary">复制邀请链接</button>
+        </div>
+        <div class="grid">
+          <div class="panel">
+            <p id="contributionBalanceLabel" class="label">贡献值余额</p>
+            <p id="contributionBalanceValue" class="value">-</p>
+          </div>
+          <div class="panel">
+            <p id="claimStateLabel" class="label">领取状态</p>
+            <p id="claimStateValue" class="value">-</p>
+          </div>
+          <div class="panel">
+            <p id="inviteRefLabel" class="label">当前邀请人</p>
+            <p id="inviteRefValue" class="value mono">-</p>
+          </div>
+          <div class="panel">
+            <p id="inviteLinkLabel" class="label">我的邀请链接</p>
+            <p id="inviteLinkValue" class="value mono">-</p>
+          </div>
+        </div>
+      </section>
+
       <div class="grid">
         <div class="panel">
           <p id="addressLabel" class="label">地址</p>
@@ -317,7 +413,9 @@
       <p id="hintText" class="hint">提示：请勿通过 file:// 打开。请使用 localhost 或线上 HTTPS 域名。</p>
     </section>
   </main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>

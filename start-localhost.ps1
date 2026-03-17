@@ -47,10 +47,20 @@ function Write-HttpResponse {
     "Content-Length: $($BodyBytes.Length)`r`n" +
     "Connection: close`r`n`r`n"
 
-  $headerBytes = [System.Text.Encoding]::ASCII.GetBytes($header)
-  $Stream.Write($headerBytes, 0, $headerBytes.Length)
-  if ($BodyBytes.Length -gt 0) {
-    $Stream.Write($BodyBytes, 0, $BodyBytes.Length)
+  try {
+    $headerBytes = [System.Text.Encoding]::ASCII.GetBytes($header)
+    $Stream.Write($headerBytes, 0, $headerBytes.Length)
+    if ($BodyBytes.Length -gt 0) {
+      $Stream.Write($BodyBytes, 0, $BodyBytes.Length)
+    }
+    return $true
+  } catch [System.IO.IOException] {
+    # Browser/client may close socket early (ERR_CONNECTION_ABORTED). Keep server alive.
+    return $false
+  } catch [System.ObjectDisposedException] {
+    return $false
+  } catch {
+    return $false
   }
 }
 
@@ -131,11 +141,15 @@ try {
       $bodyBytes = if ($method -eq "HEAD") { [System.Text.Encoding]::UTF8.GetBytes("") } else { [System.IO.File]::ReadAllBytes($fullPath) }
       Write-HttpResponse -Stream $stream -StatusCode 200 -StatusText "OK" -BodyBytes $bodyBytes -ContentType $contentType
     } catch {
-      Write-HttpResponse -Stream $stream -StatusCode 500 -StatusText "Internal Server Error" -BodyBytes ([System.Text.Encoding]::UTF8.GetBytes("Server Error"))
+      try {
+        $null = Write-HttpResponse -Stream $stream -StatusCode 500 -StatusText "Internal Server Error" -BodyBytes ([System.Text.Encoding]::UTF8.GetBytes("Server Error"))
+      } catch {
+        # Ignore secondary failure while trying to return 500.
+      }
     } finally {
-      $reader.Dispose()
-      $stream.Dispose()
-      $client.Close()
+      if ($reader) { $reader.Dispose() }
+      if ($stream) { $stream.Dispose() }
+      if ($client) { $client.Close() }
     }
   }
 } finally {

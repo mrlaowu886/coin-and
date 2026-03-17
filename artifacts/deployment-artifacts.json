@@ -1,0 +1,1259 @@
+﻿{
+    "compiler":  "solc 0.8.23",
+    "contributionToken":  {
+                              "abi":  {
+                                          "value":  [
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "stateMutability":  "nonpayable",
+                                                            "type":  "constructor"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "AccessControlBadConfirmation",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "account",
+                                                                               "type":  "address"
+                                                                           },
+                                                                           {
+                                                                               "internalType":  "bytes32",
+                                                                               "name":  "neededRole",
+                                                                               "type":  "bytes32"
+                                                                           }
+                                                                       ],
+                                                            "name":  "AccessControlUnauthorizedAccount",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "target",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "AddressEmptyCode",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "AlreadyClaimed",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "ApprovalDisabled",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "implementation",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "ERC1967InvalidImplementation",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "ERC1967NonPayable",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "spender",
+                                                                               "type":  "address"
+                                                                           },
+                                                                           {
+                                                                               "internalType":  "uint256",
+                                                                               "name":  "allowance",
+                                                                               "type":  "uint256"
+                                                                           },
+                                                                           {
+                                                                               "internalType":  "uint256",
+                                                                               "name":  "needed",
+                                                                               "type":  "uint256"
+                                                                           }
+                                                                       ],
+                                                            "name":  "ERC20InsufficientAllowance",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "sender",
+                                                                               "type":  "address"
+                                                                           },
+                                                                           {
+                                                                               "internalType":  "uint256",
+                                                                               "name":  "balance",
+                                                                               "type":  "uint256"
+                                                                           },
+                                                                           {
+                                                                               "internalType":  "uint256",
+                                                                               "name":  "needed",
+                                                                               "type":  "uint256"
+                                                                           }
+                                                                       ],
+                                                            "name":  "ERC20InsufficientBalance",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "approver",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "ERC20InvalidApprover",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "receiver",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "ERC20InvalidReceiver",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "sender",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "ERC20InvalidSender",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "spender",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "ERC20InvalidSpender",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "EnforcedPause",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "ExpectedPause",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "FailedCall",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "InvalidAdmin",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "InvalidInitialization",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "NonTransferable",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "NotInitializing",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "UUPSUnauthorizedCallContext",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "bytes32",
+                                                                               "name":  "slot",
+                                                                               "type":  "bytes32"
+                                                                           }
+                                                                       ],
+                                                            "name":  "UUPSUnsupportedProxiableUUID",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "anonymous":  false,
+                                                            "inputs":  [
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "address",
+                                                                               "name":  "owner",
+                                                                               "type":  "address"
+                                                                           },
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "address",
+                                                                               "name":  "spender",
+                                                                               "type":  "address"
+                                                                           },
+                                                                           {
+                                                                               "indexed":  false,
+                                                                               "internalType":  "uint256",
+                                                                               "name":  "value",
+                                                                               "type":  "uint256"
+                                                                           }
+                                                                       ],
+                                                            "name":  "Approval",
+                                                            "type":  "event"
+                                                        },
+                                                        {
+                                                            "anonymous":  false,
+                                                            "inputs":  [
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "address",
+                                                                               "name":  "user",
+                                                                               "type":  "address"
+                                                                           },
+                                                                           {
+                                                                               "indexed":  false,
+                                                                               "internalType":  "uint256",
+                                                                               "name":  "amount",
+                                                                               "type":  "uint256"
+                                                                           },
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "address",
+                                                                               "name":  "operator",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "BurnedForMining",
+                                                            "type":  "event"
+                                                        },
+                                                        {
+                                                            "anonymous":  false,
+                                                            "inputs":  [
+                                                                           {
+                                                                               "indexed":  false,
+                                                                               "internalType":  "uint256",
+                                                                               "name":  "amount",
+                                                                               "type":  "uint256"
+                                                                           }
+                                                                       ],
+                                                            "name":  "ClaimAmountUpdated",
+                                                            "type":  "event"
+                                                        },
+                                                        {
+                                                            "anonymous":  false,
+                                                            "inputs":  [
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "address",
+                                                                               "name":  "user",
+                                                                               "type":  "address"
+                                                                           },
+                                                                           {
+                                                                               "indexed":  false,
+                                                                               "internalType":  "uint256",
+                                                                               "name":  "amount",
+                                                                               "type":  "uint256"
+                                                                           },
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "address",
+                                                                               "name":  "referrer",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "Claimed",
+                                                            "type":  "event"
+                                                        },
+                                                        {
+                                                            "anonymous":  false,
+                                                            "inputs":  [
+                                                                           {
+                                                                               "indexed":  false,
+                                                                               "internalType":  "uint64",
+                                                                               "name":  "version",
+                                                                               "type":  "uint64"
+                                                                           }
+                                                                       ],
+                                                            "name":  "Initialized",
+                                                            "type":  "event"
+                                                        },
+                                                        {
+                                                            "anonymous":  false,
+                                                            "inputs":  [
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "address",
+                                                                               "name":  "inviter",
+                                                                               "type":  "address"
+                                                                           },
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "address",
+                                                                               "name":  "invitee",
+                                                                               "type":  "address"
+                                                                           },
+                                                                           {
+                                                                               "indexed":  false,
+                                                                               "internalType":  "uint256",
+                                                                               "name":  "amount",
+                                                                               "type":  "uint256"
+                                                                           }
+                                                                       ],
+                                                            "name":  "InviteReward",
+                                                            "type":  "event"
+                                                        },
+                                                        {
+                                                            "anonymous":  false,
+                                                            "inputs":  [
+                                                                           {
+                                                                               "indexed":  false,
+                                                                               "internalType":  "uint256",
+                                                                               "name":  "amount",
+                                                                               "type":  "uint256"
+                                                                           }
+                                                                       ],
+                                                            "name":  "InviteRewardUpdated",
+                                                            "type":  "event"
+                                                        },
+                                                        {
+                                                            "anonymous":  false,
+                                                            "inputs":  [
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "address",
+                                                                               "name":  "user",
+                                                                               "type":  "address"
+                                                                           },
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "address",
+                                                                               "name":  "inviter",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "InviterBound",
+                                                            "type":  "event"
+                                                        },
+                                                        {
+                                                            "anonymous":  false,
+                                                            "inputs":  [
+                                                                           {
+                                                                               "indexed":  false,
+                                                                               "internalType":  "address",
+                                                                               "name":  "account",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "Paused",
+                                                            "type":  "event"
+                                                        },
+                                                        {
+                                                            "anonymous":  false,
+                                                            "inputs":  [
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "bytes32",
+                                                                               "name":  "role",
+                                                                               "type":  "bytes32"
+                                                                           },
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "bytes32",
+                                                                               "name":  "previousAdminRole",
+                                                                               "type":  "bytes32"
+                                                                           },
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "bytes32",
+                                                                               "name":  "newAdminRole",
+                                                                               "type":  "bytes32"
+                                                                           }
+                                                                       ],
+                                                            "name":  "RoleAdminChanged",
+                                                            "type":  "event"
+                                                        },
+                                                        {
+                                                            "anonymous":  false,
+                                                            "inputs":  [
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "bytes32",
+                                                                               "name":  "role",
+                                                                               "type":  "bytes32"
+                                                                           },
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "address",
+                                                                               "name":  "account",
+                                                                               "type":  "address"
+                                                                           },
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "address",
+                                                                               "name":  "sender",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "RoleGranted",
+                                                            "type":  "event"
+                                                        },
+                                                        {
+                                                            "anonymous":  false,
+                                                            "inputs":  [
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "bytes32",
+                                                                               "name":  "role",
+                                                                               "type":  "bytes32"
+                                                                           },
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "address",
+                                                                               "name":  "account",
+                                                                               "type":  "address"
+                                                                           },
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "address",
+                                                                               "name":  "sender",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "RoleRevoked",
+                                                            "type":  "event"
+                                                        },
+                                                        {
+                                                            "anonymous":  false,
+                                                            "inputs":  [
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "address",
+                                                                               "name":  "from",
+                                                                               "type":  "address"
+                                                                           },
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "address",
+                                                                               "name":  "to",
+                                                                               "type":  "address"
+                                                                           },
+                                                                           {
+                                                                               "indexed":  false,
+                                                                               "internalType":  "uint256",
+                                                                               "name":  "value",
+                                                                               "type":  "uint256"
+                                                                           }
+                                                                       ],
+                                                            "name":  "Transfer",
+                                                            "type":  "event"
+                                                        },
+                                                        {
+                                                            "anonymous":  false,
+                                                            "inputs":  [
+                                                                           {
+                                                                               "indexed":  false,
+                                                                               "internalType":  "address",
+                                                                               "name":  "account",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "Unpaused",
+                                                            "type":  "event"
+                                                        },
+                                                        {
+                                                            "anonymous":  false,
+                                                            "inputs":  [
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "address",
+                                                                               "name":  "implementation",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "Upgraded",
+                                                            "type":  "event"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "DEFAULT_ADMIN_ROLE",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "bytes32",
+                                                                                "name":  "",
+                                                                                "type":  "bytes32"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "view",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "MINING_ROLE",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "bytes32",
+                                                                                "name":  "",
+                                                                                "type":  "bytes32"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "view",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "PAUSER_ROLE",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "bytes32",
+                                                                                "name":  "",
+                                                                                "type":  "bytes32"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "view",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "UPGRADER_ROLE",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "bytes32",
+                                                                                "name":  "",
+                                                                                "type":  "bytes32"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "view",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "UPGRADE_INTERFACE_VERSION",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "string",
+                                                                                "name":  "",
+                                                                                "type":  "string"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "view",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "owner",
+                                                                               "type":  "address"
+                                                                           },
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "spender",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "allowance",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "uint256",
+                                                                                "name":  "",
+                                                                                "type":  "uint256"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "view",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "",
+                                                                               "type":  "address"
+                                                                           },
+                                                                           {
+                                                                               "internalType":  "uint256",
+                                                                               "name":  "",
+                                                                               "type":  "uint256"
+                                                                           }
+                                                                       ],
+                                                            "name":  "approve",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "bool",
+                                                                                "name":  "",
+                                                                                "type":  "bool"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "pure",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "account",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "balanceOf",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "uint256",
+                                                                                "name":  "",
+                                                                                "type":  "uint256"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "view",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "uint256",
+                                                                               "name":  "amount",
+                                                                               "type":  "uint256"
+                                                                           }
+                                                                       ],
+                                                            "name":  "burn",
+                                                            "outputs":  [
+
+                                                                        ],
+                                                            "stateMutability":  "nonpayable",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "user",
+                                                                               "type":  "address"
+                                                                           },
+                                                                           {
+                                                                               "internalType":  "uint256",
+                                                                               "name":  "amount",
+                                                                               "type":  "uint256"
+                                                                           }
+                                                                       ],
+                                                            "name":  "burnByModule",
+                                                            "outputs":  [
+
+                                                                        ],
+                                                            "stateMutability":  "nonpayable",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "referrer",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "claim",
+                                                            "outputs":  [
+
+                                                                        ],
+                                                            "stateMutability":  "nonpayable",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "claimAmount",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "uint256",
+                                                                                "name":  "",
+                                                                                "type":  "uint256"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "view",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "decimals",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "uint8",
+                                                                                "name":  "",
+                                                                                "type":  "uint8"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "pure",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "bytes32",
+                                                                               "name":  "role",
+                                                                               "type":  "bytes32"
+                                                                           }
+                                                                       ],
+                                                            "name":  "getRoleAdmin",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "bytes32",
+                                                                                "name":  "",
+                                                                                "type":  "bytes32"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "view",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "bytes32",
+                                                                               "name":  "role",
+                                                                               "type":  "bytes32"
+                                                                           },
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "account",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "grantRole",
+                                                            "outputs":  [
+
+                                                                        ],
+                                                            "stateMutability":  "nonpayable",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "hasClaimed",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "bool",
+                                                                                "name":  "",
+                                                                                "type":  "bool"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "view",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "bytes32",
+                                                                               "name":  "role",
+                                                                               "type":  "bytes32"
+                                                                           },
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "account",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "hasRole",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "bool",
+                                                                                "name":  "",
+                                                                                "type":  "bool"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "view",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "string",
+                                                                               "name":  "name_",
+                                                                               "type":  "string"
+                                                                           },
+                                                                           {
+                                                                               "internalType":  "string",
+                                                                               "name":  "symbol_",
+                                                                               "type":  "string"
+                                                                           },
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "admin_",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "initialize",
+                                                            "outputs":  [
+
+                                                                        ],
+                                                            "stateMutability":  "nonpayable",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "inviteCount",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "uint256",
+                                                                                "name":  "",
+                                                                                "type":  "uint256"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "view",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "inviteReward",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "uint256",
+                                                                                "name":  "",
+                                                                                "type":  "uint256"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "view",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "inviterOf",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "address",
+                                                                                "name":  "",
+                                                                                "type":  "address"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "view",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "name",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "string",
+                                                                                "name":  "",
+                                                                                "type":  "string"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "view",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "pause",
+                                                            "outputs":  [
+
+                                                                        ],
+                                                            "stateMutability":  "nonpayable",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "paused",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "bool",
+                                                                                "name":  "",
+                                                                                "type":  "bool"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "view",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "proxiableUUID",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "bytes32",
+                                                                                "name":  "",
+                                                                                "type":  "bytes32"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "view",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "bytes32",
+                                                                               "name":  "role",
+                                                                               "type":  "bytes32"
+                                                                           },
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "callerConfirmation",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "renounceRole",
+                                                            "outputs":  [
+
+                                                                        ],
+                                                            "stateMutability":  "nonpayable",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "bytes32",
+                                                                               "name":  "role",
+                                                                               "type":  "bytes32"
+                                                                           },
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "account",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "revokeRole",
+                                                            "outputs":  [
+
+                                                                        ],
+                                                            "stateMutability":  "nonpayable",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "uint256",
+                                                                               "name":  "amount",
+                                                                               "type":  "uint256"
+                                                                           }
+                                                                       ],
+                                                            "name":  "setClaimAmount",
+                                                            "outputs":  [
+
+                                                                        ],
+                                                            "stateMutability":  "nonpayable",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "uint256",
+                                                                               "name":  "amount",
+                                                                               "type":  "uint256"
+                                                                           }
+                                                                       ],
+                                                            "name":  "setInviteReward",
+                                                            "outputs":  [
+
+                                                                        ],
+                                                            "stateMutability":  "nonpayable",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "bytes4",
+                                                                               "name":  "interfaceId",
+                                                                               "type":  "bytes4"
+                                                                           }
+                                                                       ],
+                                                            "name":  "supportsInterface",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "bool",
+                                                                                "name":  "",
+                                                                                "type":  "bool"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "view",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "symbol",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "string",
+                                                                                "name":  "",
+                                                                                "type":  "string"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "view",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "totalSupply",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "uint256",
+                                                                                "name":  "",
+                                                                                "type":  "uint256"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "view",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "",
+                                                                               "type":  "address"
+                                                                           },
+                                                                           {
+                                                                               "internalType":  "uint256",
+                                                                               "name":  "",
+                                                                               "type":  "uint256"
+                                                                           }
+                                                                       ],
+                                                            "name":  "transfer",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "bool",
+                                                                                "name":  "",
+                                                                                "type":  "bool"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "pure",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "",
+                                                                               "type":  "address"
+                                                                           },
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "",
+                                                                               "type":  "address"
+                                                                           },
+                                                                           {
+                                                                               "internalType":  "uint256",
+                                                                               "name":  "",
+                                                                               "type":  "uint256"
+                                                                           }
+                                                                       ],
+                                                            "name":  "transferFrom",
+                                                            "outputs":  [
+                                                                            {
+                                                                                "internalType":  "bool",
+                                                                                "name":  "",
+                                                                                "type":  "bool"
+                                                                            }
+                                                                        ],
+                                                            "stateMutability":  "pure",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "unpause",
+                                                            "outputs":  [
+
+                                                                        ],
+                                                            "stateMutability":  "nonpayable",
+                                                            "type":  "function"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "newImplementation",
+                                                                               "type":  "address"
+                                                                           },
+                                                                           {
+                                                                               "internalType":  "bytes",
+                                                                               "name":  "data",
+                                                                               "type":  "bytes"
+                                                                           }
+                                                                       ],
+                                                            "name":  "upgradeToAndCall",
+                                                            "outputs":  [
+
+                                                                        ],
+                                                            "stateMutability":  "payable",
+                                                            "type":  "function"
+                                                        }
+                                                    ],
+                                          "Count":  74
+                                      },
+                              "bytecode":  "0x60a060405230608052348015610013575f80fd5b5061001c610021565b6100d3565b7ff0c57e16840df040f15088dc2f81fe391c3923bec73e23a9662efc9c229c6a00805468010000000000000000900460ff16156100715760405163f92ee8a960e01b815260040160405180910390fd5b80546001600160401b03908116146100d05780546001600160401b0319166001600160401b0390811782556040519081527fc7f505b2f371ae2175ee4913f4499e1f2633a7b5936321eed1cdaeb6115181d29060200160405180910390a15b50565b608051611ca06100f95f395f81816111350152818161115e01526112bf0152611ca05ff3fe608060405260043610610207575f3560e01c806357b24e6b11610113578063a217fddf1161009d578063c8ced3551161006d578063c8ced35514610609578063d547741f14610655578063dd62ed3e14610674578063e63ab1e9146106d7578063f72c0d8b146106f7575f80fd5b8063a217fddf1461058d578063a9059cbb146105a0578063ad3cb1cc146105ba578063b1c7ef0c146105ea575f80fd5b806373b2e80e116100e357806373b2e80e14610504578063830953ab146105325780638456cb591461054657806391d148541461055a57806395d89b4114610579575f80fd5b806357b24e6b146104435780635b2c6c441461046e5780635c975abb146104a157806370a08231146104c4575f80fd5b806323b872dd1161019457806336568abe1161016457806336568abe146103ca5780633f4ba83a146103e957806342966c68146103fd5780634f1ef2861461041c57806352d1902d1461042f575f80fd5b806323b872dd14610353578063248a9ca3146103725780632f2ff15d14610391578063313ce567146103b0575f80fd5b8063077f224a116101da578063077f224a146102a4578063091048bf146102c3578063095ea7b3146102e257806318160ddd146103015780631e83409a14610334575f80fd5b8063011847a21461020b578063016896771461023357806301ffc9a71461025457806306fdde0314610283575b5f80fd5b348015610216575f80fd5b5061022060015481565b6040519081526020015b60405180910390f35b34801561023e575f80fd5b5061025261024d36600461176e565b61072a565b005b34801561025f575f80fd5b5061027361026e366004611785565b610771565b604051901515815260200161022a565b34801561028e575f80fd5b506102976107a7565b60405161022a91906117b3565b3480156102af575f80fd5b506102526102be3660046118bf565b610867565b3480156102ce575f80fd5b506102526102dd36600461192e565b6109f3565b3480156102ed575f80fd5b506102736102fc36600461192e565b610a74565b34801561030c575f80fd5b507f52c63247e1f47db19d5ce0460030c497f067ca4cebf71ba98eeadabe20bace0254610220565b34801561033f575f80fd5b5061025261034e366004611956565b610a8e565b34801561035e575f80fd5b5061027361036d36600461196f565b610b55565b34801561037d575f80fd5b5061022061038c36600461176e565b610b6f565b34801561039c575f80fd5b506102526103ab3660046119a8565b610b8f565b3480156103bb575f80fd5b506040515f815260200161022a565b3480156103d5575f80fd5b506102526103e43660046119a8565b610bb1565b3480156103f4575f80fd5b50610252610be9565b348015610408575f80fd5b5061025261041736600461176e565b610c0b565b61025261042a3660046119d2565b610c57565b34801561043a575f80fd5b50610220610c76565b34801561044e575f80fd5b5061022061045d366004611956565b60046020525f908152604090205481565b348015610479575f80fd5b506102207f8be2c0f161b6ecfa2109fef6e48c0e7cb83fe342c050dbc6ecc50e6a484fa38e81565b3480156104ac575f80fd5b505f80516020611c4b8339815191525460ff16610273565b3480156104cf575f80fd5b506102206104de366004611956565b6001600160a01b03165f9081525f80516020611bcb833981519152602052604090205490565b34801561050f575f80fd5b5061027361051e366004611956565b60026020525f908152604090205460ff1681565b34801561053d575f80fd5b506102205f5481565b348015610551575f80fd5b50610252610c91565b348015610565575f80fd5b506102736105743660046119a8565b610cb0565b348015610584575f80fd5b50610297610ce6565b348015610598575f80fd5b506102205f81565b3480156105ab575f80fd5b5061027361036d36600461192e565b3480156105c5575f80fd5b50610297604051806040016040528060058152602001640352e302e360dc1b81525081565b3480156105f5575f80fd5b5061025261060436600461176e565b610d24565b348015610614575f80fd5b5061063d610623366004611956565b60036020525f90815260409020546001600160a01b031681565b6040516001600160a01b03909116815260200161022a565b348015610660575f80fd5b5061025261066f3660046119a8565b610d62565b34801561067f575f80fd5b5061022061068e366004611a30565b6001600160a01b039182165f9081527f52c63247e1f47db19d5ce0460030c497f067ca4cebf71ba98eeadabe20bace016020908152604080832093909416825291909152205490565b3480156106e2575f80fd5b506102205f80516020611c0b83398151915281565b348015610702575f80fd5b506102207f189ab7a9244df0848122154315af71fe140f3db0fe014031783b0946b8c9d2e381565b5f61073481610d7e565b60018290556040518281527f53fc38b19fb2d341ac747e9638fad230c8f5ee7350d18b046f6ed3fbb2ca9691906020015b60405180910390a15050565b5f6001600160e01b03198216637965db0b60e01b14806107a157506301ffc9a760e01b6001600160e01b03198316145b92915050565b7f52c63247e1f47db19d5ce0460030c497f067ca4cebf71ba98eeadabe20bace0380546060915f80516020611bcb833981519152916107e590611a58565b80601f016020809104026020016040519081016040528092919081815260200182805461081190611a58565b801561085c5780601f106108335761010080835404028352916020019161085c565b820191905f5260205f20905b81548152906001019060200180831161083f57829003601f168201915b505050505091505090565b5f610870610d88565b805490915060ff600160401b820416159067ffffffffffffffff165f811580156108975750825b90505f8267ffffffffffffffff1660011480156108b35750303b155b9050811580156108c1575080155b156108df5760405163f92ee8a960e01b815260040160405180910390fd5b845467ffffffffffffffff19166001178555831561090957845460ff60401b1916600160401b1785555b6001600160a01b03861661093057604051630b5eba9f60e41b815260040160405180910390fd5b61093a8888610db0565b610942610dc2565b61094a610dc2565b60645f908155603260015561095f9087610dcc565b506109775f80516020611c0b83398151915287610dcc565b506109a27f189ab7a9244df0848122154315af71fe140f3db0fe014031783b0946b8c9d2e387610dcc565b5083156109e957845460ff60401b19168555604051600181527fc7f505b2f371ae2175ee4913f4499e1f2633a7b5936321eed1cdaeb6115181d29060200160405180910390a15b5050505050505050565b6109fb610e74565b7f8be2c0f161b6ecfa2109fef6e48c0e7cb83fe342c050dbc6ecc50e6a484fa38e610a2581610d7e565b610a2f8383610ea4565b60405182815233906001600160a01b038516907ff794ff7ad9b992350053ecd3db08f710fca6c3b1c7adcf1fc5e4311f9627a9919060200160405180910390a3505050565b5f6040516364e57b7d60e01b815260040160405180910390fd5b610a96610e74565b335f9081526002602052604090205460ff1615610ac657604051630c8d9eab60e31b815260040160405180910390fd5b335f818152600260205260408120805460ff1916600117905554610aea9190610edd565b5f610af53383610f11565b905080610b02575f610b04565b815b6001600160a01b0316336001600160a01b03167f7e6632ca16a0ac6cf28448500b1a17d96c8b8163ad4c4a9b44ef5386cc02779e5f54604051610b4991815260200190565b60405180910390a35050565b5f604051639cbe235760e01b815260040160405180910390fd5b5f9081525f80516020611c2b833981519152602052604090206001015490565b610b9882610b6f565b610ba181610d7e565b610bab8383610dcc565b50505050565b6001600160a01b0381163314610bda5760405163334bd91960e11b815260040160405180910390fd5b610be48282611052565b505050565b5f80516020611c0b833981519152610c0081610d7e565b610c086110cb565b50565b610c13610e74565b610c1d3382610ea4565b604051818152339081907ff794ff7ad9b992350053ecd3db08f710fca6c3b1c7adcf1fc5e4311f9627a9919060200160405180910390a350565b610c5f61112a565b610c68826111ce565b610c7282826111f8565b5050565b5f610c7f6112b4565b505f80516020611beb83398151915290565b5f80516020611c0b833981519152610ca881610d7e565b610c086112fd565b5f9182525f80516020611c2b833981519152602090815260408084206001600160a01b0393909316845291905290205460ff1690565b7f52c63247e1f47db19d5ce0460030c497f067ca4cebf71ba98eeadabe20bace0480546060915f80516020611bcb833981519152916107e590611a58565b5f610d2e81610d7e565b5f8290556040518281527f6a856539d0c38e2d0062c02baf02b3d784e9de37335f10d75d5ed7e606c7045690602001610765565b610d6b82610b6f565b610d7481610d7e565b610bab8383611052565b610c088133611345565b5f807ff0c57e16840df040f15088dc2f81fe391c3923bec73e23a9662efc9c229c6a006107a1565b610db861137e565b610c7282826113a3565b610dca61137e565b565b5f5f80516020611c2b833981519152610de58484610cb0565b610e64575f848152602082815260408083206001600160a01b03871684529091529020805460ff19166001179055610e1a3390565b6001600160a01b0316836001600160a01b0316857f2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d60405160405180910390a460019150506107a1565b5f9150506107a1565b5092915050565b5f80516020611c4b8339815191525460ff1615610dca5760405163d93c066560e01b815260040160405180910390fd5b6001600160a01b038216610ed257604051634b637e8f60e11b81525f60048201526024015b60405180910390fd5b610c72825f836113f3565b6001600160a01b038216610f065760405163ec442f0560e01b81525f6004820152602401610ec9565b610c725f83836113f3565b5f6001600160a01b038216610f2757505f6107a1565b826001600160a01b0316826001600160a01b031603610f4757505f6107a1565b6001600160a01b0382165f9081526002602052604090205460ff16610f6d57505f6107a1565b6001600160a01b038381165f90815260036020908152604080832080546001600160a01b031916948716948517905592825260049052208054600190810190915554610fba908390610edd565b816001600160a01b0316836001600160a01b03167fad19acbfe329ed02112851f095801de1e5474be0e6fcb5810aaf795fb120249f60405160405180910390a3826001600160a01b0316826001600160a01b03167f2c624e38b35f31aeff868e63a0aae61fca8cbb603237596ba5a5d30d20ba320660015460405161104191815260200190565b60405180910390a350600192915050565b5f5f80516020611c2b83398151915261106b8484610cb0565b15610e64575f848152602082815260408083206001600160a01b0387168085529252808320805460ff1916905551339287917ff6391f5c32d9c69d2a47ea670b442974b53935d1edc7fd64eb21e047a839171b9190a460019150506107a1565b6110d3611446565b5f80516020611c4b833981519152805460ff191681557f5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa335b6040516001600160a01b03909116815260200160405180910390a150565b306001600160a01b037f00000000000000000000000000000000000000000000000000000000000000001614806111b057507f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03166111a45f80516020611beb833981519152546001600160a01b031690565b6001600160a01b031614155b15610dca5760405163703e46dd60e11b815260040160405180910390fd5b7f189ab7a9244df0848122154315af71fe140f3db0fe014031783b0946b8c9d2e3610c7281610d7e565b816001600160a01b03166352d1902d6040518163ffffffff1660e01b8152600401602060405180830381865afa925050508015611252575060408051601f3d908101601f1916820190925261124f91810190611a90565b60015b61127a57604051634c9c8ce360e01b81526001600160a01b0383166004820152602401610ec9565b5f80516020611beb83398151915281146112aa57604051632a87526960e21b815260048101829052602401610ec9565b610be48383611475565b306001600160a01b037f00000000000000000000000000000000000000000000000000000000000000001614610dca5760405163703e46dd60e11b815260040160405180910390fd5b611305610e74565b5f80516020611c4b833981519152805460ff191660011781557f62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a2583361110c565b61134f8282610cb0565b610c725760405163e2517d3f60e01b81526001600160a01b038216600482015260248101839052604401610ec9565b6113866114ca565b610dca57604051631afcd79f60e31b815260040160405180910390fd5b6113ab61137e565b5f80516020611bcb8339815191527f52c63247e1f47db19d5ce0460030c497f067ca4cebf71ba98eeadabe20bace036113e48482611aeb565b5060048101610bab8382611aeb565b6113fb610e74565b6001600160a01b038381161590831615811582611416575080155b1561143457604051639cbe235760e01b815260040160405180910390fd5b61143f8585856114e3565b5050505050565b5f80516020611c4b8339815191525460ff16610dca57604051638dfc202b60e01b815260040160405180910390fd5b61147e8261161c565b6040516001600160a01b038316907fbc7cd75a20ee27fd9adebab32041f755214dbc6bffa90cc0225b39da2e5c2d3b905f90a28051156114c257610be4828261167f565b610c72611718565b5f6114d3610d88565b54600160401b900460ff16919050565b5f80516020611bcb8339815191526001600160a01b03841661151d5781816002015f8282546115129190611bab565b9091555061158d9050565b6001600160a01b0384165f908152602082905260409020548281101561156f5760405163391434e360e21b81526001600160a01b03861660048201526024810182905260448101849052606401610ec9565b6001600160a01b0385165f9081526020839052604090209083900390555b6001600160a01b0383166115ab5760028101805483900390556115c9565b6001600160a01b0383165f9081526020829052604090208054830190555b826001600160a01b0316846001600160a01b03167fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef8460405161160e91815260200190565b60405180910390a350505050565b806001600160a01b03163b5f0361165157604051634c9c8ce360e01b81526001600160a01b0382166004820152602401610ec9565b5f80516020611beb83398151915280546001600160a01b0319166001600160a01b0392909216919091179055565b60605f61168c8484611737565b90508080156116ad57505f3d11806116ad57505f846001600160a01b03163b115b156116c2576116ba61174a565b9150506107a1565b80156116ec57604051639996b31560e01b81526001600160a01b0385166004820152602401610ec9565b3d156116ff576116fa611763565b610e6d565b60405163d6bda27560e01b815260040160405180910390fd5b3415610dca5760405163b398979f60e01b815260040160405180910390fd5b5f805f835160208501865af49392505050565b6040513d81523d5f602083013e3d602001810160405290565b6040513d5f823e3d81fd5b5f6020828403121561177e575f80fd5b5035919050565b5f60208284031215611795575f80fd5b81356001600160e01b0319811681146117ac575f80fd5b9392505050565b5f602080835283518060208501525f5b818110156117df578581018301518582016040015282016117c3565b505f604082860101526040601f19601f8301168501019250505092915050565b634e487b7160e01b5f52604160045260245ffd5b5f67ffffffffffffffff8084111561182d5761182d6117ff565b604051601f8501601f19908116603f01168101908282118183101715611855576118556117ff565b8160405280935085815286868601111561186d575f80fd5b858560208301375f602087830101525050509392505050565b5f82601f830112611895575f80fd5b6117ac83833560208501611813565b80356001600160a01b03811681146118ba575f80fd5b919050565b5f805f606084860312156118d1575f80fd5b833567ffffffffffffffff808211156118e8575f80fd5b6118f487838801611886565b94506020860135915080821115611909575f80fd5b5061191686828701611886565b925050611925604085016118a4565b90509250925092565b5f806040838503121561193f575f80fd5b611948836118a4565b946020939093013593505050565b5f60208284031215611966575f80fd5b6117ac826118a4565b5f805f60608486031215611981575f80fd5b61198a846118a4565b9250611998602085016118a4565b9150604084013590509250925092565b5f80604083850312156119b9575f80fd5b823591506119c9602084016118a4565b90509250929050565b5f80604083850312156119e3575f80fd5b6119ec836118a4565b9150602083013567ffffffffffffffff811115611a07575f80fd5b8301601f81018513611a17575f80fd5b611a2685823560208401611813565b9150509250929050565b5f8060408385031215611a41575f80fd5b611a4a836118a4565b91506119c9602084016118a4565b600181811c90821680611a6c57607f821691505b602082108103611a8a57634e487b7160e01b5f52602260045260245ffd5b50919050565b5f60208284031215611aa0575f80fd5b5051919050565b601f821115610be457805f5260205f20601f840160051c81016020851015611acc5750805b601f840160051c820191505b8181101561143f575f8155600101611ad8565b815167ffffffffffffffff811115611b0557611b056117ff565b611b1981611b138454611a58565b84611aa7565b602080601f831160018114611b4c575f8415611b355750858301515b5f19600386901b1c1916600185901b178555611ba3565b5f85815260208120601f198616915b82811015611b7a57888601518255948401946001909101908401611b5b565b5085821015611b9757878501515f19600388901b60f8161c191681555b505060018460011b0185555b505050505050565b808201808211156107a157634e487b7160e01b5f52601160045260245ffdfe52c63247e1f47db19d5ce0460030c497f067ca4cebf71ba98eeadabe20bace00360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc65d7a28e3265b37a6474929f336521b332c1681b933f6cb9f3376673440d862a02dd7bc7dec4dceedda775e58dd541e08a116c6c53815c0bd028192f7b626800cd5ed15c6e187e77e9aee88184c21f4f2182ab5827cb3b7e07fbedcd63f03300a26469706673582212206dd134c477ff79aa54196ac472361dd28d9a5e4e697a7eb53f5a91f4209df3b464736f6c63430008170033"
+                          },
+    "contributionProxy":  {
+                              "abi":  {
+                                          "value":  [
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "logic",
+                                                                               "type":  "address"
+                                                                           },
+                                                                           {
+                                                                               "internalType":  "bytes",
+                                                                               "name":  "data",
+                                                                               "type":  "bytes"
+                                                                           }
+                                                                       ],
+                                                            "stateMutability":  "nonpayable",
+                                                            "type":  "constructor"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "target",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "AddressEmptyCode",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+                                                                           {
+                                                                               "internalType":  "address",
+                                                                               "name":  "implementation",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "ERC1967InvalidImplementation",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "ERC1967NonPayable",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "ERC1967ProxyUninitialized",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "inputs":  [
+
+                                                                       ],
+                                                            "name":  "FailedCall",
+                                                            "type":  "error"
+                                                        },
+                                                        {
+                                                            "anonymous":  false,
+                                                            "inputs":  [
+                                                                           {
+                                                                               "indexed":  true,
+                                                                               "internalType":  "address",
+                                                                               "name":  "implementation",
+                                                                               "type":  "address"
+                                                                           }
+                                                                       ],
+                                                            "name":  "Upgraded",
+                                                            "type":  "event"
+                                                        },
+                                                        {
+                                                            "stateMutability":  "payable",
+                                                            "type":  "fallback"
+                                                        }
+                                                    ],
+                                          "Count":  8
+                                      },
+                              "bytecode":  "0x608060405234801561000f575f80fd5b506040516103d83803806103d883398101604081905261002e91610248565b8181805161004f576040516330a289cf60e21b815260040160405180910390fd5b6100598282610062565b50505050610329565b61006b826100c0565b6040516001600160a01b038316907fbc7cd75a20ee27fd9adebab32041f755214dbc6bffa90cc0225b39da2e5c2d3b905f90a28051156100b4576100af828261013b565b505050565b6100bc6101dc565b5050565b806001600160a01b03163b5f036100fa57604051634c9c8ce360e01b81526001600160a01b03821660048201526024015b60405180910390fd5b7f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc80546001600160a01b0319166001600160a01b0392909216919091179055565b60605f61014884846101fd565b905080801561016957505f3d118061016957505f846001600160a01b03163b115b1561017e57610176610210565b9150506101d6565b80156101a857604051639996b31560e01b81526001600160a01b03851660048201526024016100f1565b3d156101bb576101b6610229565b6101d4565b60405163d6bda27560e01b815260040160405180910390fd5b505b92915050565b34156101fb5760405163b398979f60e01b815260040160405180910390fd5b565b5f805f835160208501865af49392505050565b6040513d81523d5f602083013e3d602001810160405290565b6040513d5f823e3d81fd5b634e487b7160e01b5f52604160045260245ffd5b5f8060408385031215610259575f80fd5b82516001600160a01b038116811461026f575f80fd5b602084810151919350906001600160401b038082111561028d575f80fd5b818601915086601f8301126102a0575f80fd5b8151818111156102b2576102b2610234565b604051601f8201601f19908116603f011681019083821181831017156102da576102da610234565b8160405282815289868487010111156102f1575f80fd5b5f93505b8284101561031257848401860151818501870152928501926102f5565b5f8684830101528096505050505050509250929050565b60a3806103355f395ff3fe6080604052600a600c565b005b60186014601a565b6050565b565b5f604b7f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc546001600160a01b031690565b905090565b365f80375f80365f845af43d5f803e8080156069573d5ff35b3d5ffdfea2646970667358221220eebb0f54b519089adc0054b5a2b4a0483fccaca822a4e5788859375b59611b9464736f6c63430008170033"
+                          }
+}

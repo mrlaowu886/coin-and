@@ -6,6 +6,14 @@ const I18N = {
     appSubtitle: "连接 EVM 钱包（MetaMask、Rabby、OKX、Bitget 等），当前仅开放 BSC 主网，其他公链已隐藏备用。",
     langSwitchAria: "语言切换",
     langSelectLabel: "语言",
+    providerSwitchAria: "钱包切换",
+    providerSelectLabel: "钱包",
+    providerAutoOption: "自动选择",
+    walletPickerTitle: "连接钱包",
+    walletPickerDesc: "请选择要连接的钱包",
+    walletPickerHint: "如果没看到你要用的钱包，请先确认插件已安装并允许此网站访问。",
+    walletPickerCloseAria: "关闭钱包选择弹窗",
+    walletPickerPowered: "选择钱包后会弹出对应授权窗口",
     themeSwitchAria: "主题切换",
     themeSelectLabel: "主题",
     themeAuto: "跟随系统",
@@ -66,6 +74,18 @@ const I18N = {
     logProviderSelected: "已选择钱包提供者：{provider}{extra}",
     logProviderSelectedSingle: "已选择钱包提供者：{provider}",
     logProviderSelectedMulti: "已选择钱包提供者：{provider}（检测到 {count} 个钱包）",
+    logProviderPrefSaved: "已切换优先钱包：{provider}。",
+    logProviderPrefAuto: "已切换为自动选择钱包。",
+    logProviderPrefHintReconnect: "请点击“重新连接”，并在目标钱包弹窗中授权。",
+    logPreferredProviderMissing: "你设置的优先钱包（{provider}）当前未检测到，已自动回退。",
+    logWalletPickerCanceled: "你已取消钱包选择。",
+    logWalletConnectInit: "正在打开 WalletConnect 二维码...",
+    logWalletConnectUnavailable: "未加载 WalletConnect SDK，请刷新后重试。",
+    logWalletConnectFailed: "WalletConnect 连接失败：{message}",
+    logWalletConnectNeedProjectId: "需要 WalletConnect Project ID。已弹出输入框，请填写后重试。",
+    logWalletConnectProjectIdSaved: "WalletConnect Project ID 已保存。",
+    logWalletConnectProjectIdInvalid: "Project ID 格式无效，应为 32 位十六进制。",
+    promptWalletConnectProjectId: "请输入 WalletConnect Project ID（32位十六进制）",
     logProviderCountSuffix: "（检测到 {count} 个钱包）",
     logNoProviderFound: "未通过 window.ethereum 或 EIP-6963 发现钱包。",
     logCandidates: "候选钱包：{candidates}",
@@ -125,6 +145,14 @@ const I18N = {
     appSubtitle: "Connect EVM wallets (MetaMask, Rabby, OKX, Bitget, etc.). Only BSC mainnet is enabled now; other chains are hidden for future use.",
     langSwitchAria: "Language switch",
     langSelectLabel: "Language",
+    providerSwitchAria: "Wallet switch",
+    providerSelectLabel: "Wallet",
+    providerAutoOption: "Auto select",
+    walletPickerTitle: "Connect Wallet",
+    walletPickerDesc: "Choose the wallet you want to connect.",
+    walletPickerHint: "If your wallet is missing, make sure the extension is installed and allowed on this site.",
+    walletPickerCloseAria: "Close wallet selector",
+    walletPickerPowered: "Selecting a wallet will open its authorization flow",
     themeSwitchAria: "Theme switch",
     themeSelectLabel: "Theme",
     themeAuto: "System",
@@ -185,6 +213,18 @@ const I18N = {
     logProviderSelected: "Provider selected: {provider}{extra}",
     logProviderSelectedSingle: "Provider selected: {provider}",
     logProviderSelectedMulti: "Provider selected: {provider} ({count} wallets found)",
+    logProviderPrefSaved: "Preferred wallet switched to: {provider}.",
+    logProviderPrefAuto: "Wallet preference switched to auto select.",
+    logProviderPrefHintReconnect: "Click Reconnect and approve in your target wallet popup.",
+    logPreferredProviderMissing: "Your preferred wallet ({provider}) is not detected now. Fallback applied automatically.",
+    logWalletPickerCanceled: "Wallet selection canceled.",
+    logWalletConnectInit: "Opening WalletConnect QR modal...",
+    logWalletConnectUnavailable: "WalletConnect SDK is not loaded. Refresh and try again.",
+    logWalletConnectFailed: "WalletConnect failed: {message}",
+    logWalletConnectNeedProjectId: "WalletConnect Project ID is required. Input prompt opened.",
+    logWalletConnectProjectIdSaved: "WalletConnect Project ID saved.",
+    logWalletConnectProjectIdInvalid: "Invalid Project ID format. It must be 32 hex chars.",
+    promptWalletConnectProjectId: "Enter WalletConnect Project ID (32 hex chars)",
     logProviderCountSuffix: " ({count} wallets found)",
     logNoProviderFound: "No provider found from window.ethereum or EIP-6963.",
     logCandidates: "Candidates: {candidates}",
@@ -1207,6 +1247,7 @@ const ACTIVE_NETWORKS = NETWORKS.filter((network) => network.enabled);
 const REQUIRED_NETWORK = ACTIVE_NETWORKS[0] || null;
 
 const LANG_PREF_KEY = "wallet-connect:lang-pref";
+const PROVIDER_PREF_KEY = "wallet-connect:provider-pref";
 const THEME_PREF_KEY = "wallet-connect:theme-pref";
 const LAST_NETWORK_KEY = "wallet-connect:last-network";
 const CONTRIBUTION_CONTRACT_KEY = "wallet-connect:contribution-contract";
@@ -1228,9 +1269,19 @@ const CONTRIBUTION_TOKEN_ABI = [
 const langSwitch = document.getElementById("langSwitch");
 const langSelectLabel = document.getElementById("langSelectLabel");
 const langSelect = document.getElementById("langSelect");
+const providerSwitch = document.getElementById("providerSwitch");
+const providerSelectLabel = document.getElementById("providerSelectLabel");
+const providerSelect = document.getElementById("providerSelect");
 const themeSwitch = document.getElementById("themeSwitch");
 const themeSelectLabel = document.getElementById("themeSelectLabel");
 const themeSelect = document.getElementById("themeSelect");
+const walletPickerModal = document.getElementById("walletPickerModal");
+const walletPickerTitle = document.getElementById("walletPickerTitle");
+const walletPickerDesc = document.getElementById("walletPickerDesc");
+const walletPickerHint = document.getElementById("walletPickerHint");
+const walletPickerPowered = document.getElementById("walletPickerPowered");
+const walletPickerClose = document.getElementById("walletPickerClose");
+const walletPickerGrid = document.getElementById("walletPickerGrid");
 
 const titleText = document.getElementById("titleText");
 const subtitleText = document.getElementById("subtitleText");
@@ -1276,6 +1327,7 @@ let toastTimer = null;
 
 let currentLangPref = "auto";
 let currentLang = "zh";
+let currentProviderPref = "auto";
 let currentThemePref = "auto";
 let currentTheme = "night";
 
@@ -1289,8 +1341,10 @@ const THEME_OPTIONS = Object.freeze([
 let provider = null;
 let providerName = t("unknown");
 let boundProvider = null;
+let providerPreAuthorized = false;
 let eipDiscoveryReady = false;
 const eip6963Providers = new Map();
+const providerPreferenceLabels = new Map();
 let currentAccount = "";
 let currentChainId = "";
 let lastStatus = { key: "statusNotConnected", connected: false, vars: {} };
@@ -1458,6 +1512,104 @@ function renderThemeSelector() {
   themeSelect.value = currentThemePref;
 }
 
+function loadProviderPreference() {
+  try {
+    const saved = localStorage.getItem(PROVIDER_PREF_KEY) || "auto";
+    return saved || "auto";
+  } catch (error) {
+    return "auto";
+  }
+}
+
+function getProviderLabelByPreference(pref) {
+  if (!pref || pref === "auto") return t("providerAutoOption");
+  if (providerPreferenceLabels.has(pref)) return providerPreferenceLabels.get(pref);
+  const lower = String(pref).toLowerCase();
+  if (lower.includes("metamask")) return "MetaMask";
+  if (lower.includes("okx") || lower.includes("okex")) return "OKX Wallet";
+  if (lower.includes("rabby")) return "Rabby";
+  if (lower.includes("bitget") || lower.includes("bitkeep")) return "Bitget Wallet";
+  if (lower.includes("coinbase")) return "Coinbase Wallet";
+  if (lower.includes("trust")) return "Trust Wallet";
+  return String(pref);
+}
+
+function renderProviderSelector(candidatesArg = null) {
+  if (providerSwitch) {
+    providerSwitch.setAttribute("aria-label", t("providerSwitchAria"));
+  }
+  if (providerSelectLabel) {
+    providerSelectLabel.textContent = t("providerSelectLabel");
+  }
+  if (!providerSelect) return;
+
+  const candidates = Array.isArray(candidatesArg) ? candidatesArg : collectProviderCandidates();
+  const options = [{ value: "auto", label: t("providerAutoOption") }];
+  candidates.forEach((item) => {
+    options.push({ value: item.id, label: item.name });
+  });
+
+  const unique = [];
+  const seen = new Set();
+  const seenLabel = new Set();
+  options.forEach((item) => {
+    const labelKey = String(item.label || "").trim().toLowerCase();
+    if (item.value === "auto") {
+      unique.push(item);
+      seen.add(item.value);
+      if (labelKey) seenLabel.add(labelKey);
+      return;
+    }
+    if (seen.has(item.value)) return;
+    if (labelKey && seenLabel.has(labelKey)) return;
+    seen.add(item.value);
+    if (labelKey) seenLabel.add(labelKey);
+    unique.push(item);
+  });
+
+  providerPreferenceLabels.clear();
+  unique.forEach((item) => {
+    providerPreferenceLabels.set(item.value, item.label);
+  });
+
+  const mustRebuild = providerSelect.options.length !== unique.length;
+  if (mustRebuild) {
+    providerSelect.innerHTML = "";
+  }
+
+  unique.forEach((item, index) => {
+    const option = mustRebuild ? document.createElement("option") : providerSelect.options[index];
+    option.value = item.value;
+    option.textContent = item.label;
+    if (mustRebuild) {
+      providerSelect.appendChild(option);
+    }
+  });
+
+  const hasSaved = unique.some((item) => item.value === currentProviderPref);
+  providerSelect.value = hasSaved ? currentProviderPref : "auto";
+  providerSelect.disabled = unique.length <= 1;
+}
+
+function setProviderPreference(pref, persist = true) {
+  currentProviderPref = pref && pref !== "auto" ? String(pref) : "auto";
+  renderProviderSelector();
+  if (persist) {
+    try {
+      localStorage.setItem(PROVIDER_PREF_KEY, currentProviderPref);
+    } catch (error) {
+      // ignore storage write failure
+    }
+  }
+
+  if (currentProviderPref === "auto") {
+    logT("logProviderPrefAuto");
+  } else {
+    logT("logProviderPrefSaved", { provider: getProviderLabelByPreference(currentProviderPref) });
+  }
+  logT("logProviderPrefHintReconnect");
+}
+
 function setButtonLabel(button, text) {
   if (!button) return;
   button.dataset.normalText = text;
@@ -1519,6 +1671,11 @@ function applyLanguage() {
   document.title = t("appTitle");
   titleText.textContent = t("appTitle");
   subtitleText.textContent = t("appSubtitle");
+  if (walletPickerTitle) walletPickerTitle.textContent = t("walletPickerTitle");
+  if (walletPickerDesc) walletPickerDesc.textContent = t("walletPickerDesc");
+  if (walletPickerHint) walletPickerHint.textContent = t("walletPickerHint");
+  if (walletPickerPowered) walletPickerPowered.textContent = t("walletPickerPowered");
+  if (walletPickerClose) walletPickerClose.setAttribute("aria-label", t("walletPickerCloseAria"));
   addressLabel.textContent = t("labelAddress");
   chainLabel.textContent = t("labelCurrentChain");
   balanceLabel.textContent = t("labelNativeBalance");
@@ -2155,10 +2312,211 @@ function getProviderName(providerItem, info = null) {
   return t("providerInjected");
 }
 
+function getWalletPickerBadge(name) {
+  const plain = String(name || "").replace(/wallet/ig, "").trim();
+  if (!plain) return "W";
+  const compact = plain.replace(/\s+/g, "");
+  return compact.slice(0, 2).toUpperCase();
+}
+
+function svgToDataUri(svgText) {
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svgText)}`;
+}
+
+function getWalletIconUrl(item) {
+  const normalized = `${item && item.id ? item.id : ""} ${item && item.name ? item.name : ""}`.toLowerCase();
+  if (normalized.includes("metamask")) {
+    return "https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg";
+  }
+  if (normalized.includes("okx") || normalized.includes("okex")) {
+    const okxSvg = `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-hidden="true">
+  <rect width="64" height="64" rx="8" fill="#9BEA2C"/>
+  <rect x="14" y="14" width="14" height="14" rx="2.2" fill="#111"/>
+  <rect x="36" y="14" width="14" height="14" rx="2.2" fill="#111"/>
+  <rect x="25" y="25" width="14" height="14" rx="2.2" fill="#111"/>
+  <rect x="14" y="36" width="14" height="14" rx="2.2" fill="#111"/>
+  <rect x="36" y="36" width="14" height="14" rx="2.2" fill="#111"/>
+</svg>`;
+    return svgToDataUri(okxSvg);
+  }
+  const infoIcon = String(item && item.info && item.info.icon ? item.info.icon : "").trim();
+  if (infoIcon) {
+    return infoIcon;
+  }
+  if (normalized.includes("coinbase")) {
+    return "https://cdn.simpleicons.org/coinbase/0052FF";
+  }
+  if (normalized.includes("trust")) {
+    return "https://cdn.simpleicons.org/trustwallet/3375BB";
+  }
+  if (normalized.includes("bitget") || normalized.includes("bitkeep")) {
+    return "https://cdn.simpleicons.org/bitget/00D0B4";
+  }
+  if (normalized.includes("phantom")) {
+    return "https://cdn.simpleicons.org/phantom/8A5CF6";
+  }
+  if (normalized.includes("rabby")) {
+    return "https://cdn.simpleicons.org/rabby/7080FF";
+  }
+  return "";
+}
+
+function uniqueWalletPickerCandidates(candidates) {
+  const unique = [];
+  const indexByName = new Map();
+  const hasIcon = (entry) => Boolean(entry && entry.info && String(entry.info.icon || "").trim());
+  candidates.forEach((item) => {
+    const nameKey = String(item && item.name ? item.name : "")
+      .trim()
+      .toLowerCase();
+    if (!nameKey) return;
+    const foundIndex = indexByName.get(nameKey);
+    if (typeof foundIndex !== "number") {
+      indexByName.set(nameKey, unique.length);
+      unique.push(item);
+      return;
+    }
+    const existing = unique[foundIndex];
+    const shouldReplace = (!hasIcon(existing) && hasIcon(item))
+      || (existing && existing.source === "injected" && item && item.source === "eip6963");
+    if (shouldReplace) {
+      unique[foundIndex] = item;
+    }
+  });
+  return unique;
+}
+
+function buildWalletPickerCandidates(candidates) {
+  return uniqueWalletPickerCandidates(Array.isArray(candidates) ? candidates : []);
+}
+
+function showWalletPicker(candidates, preferredId = "") {
+  const uniqueCandidates = uniqueWalletPickerCandidates(candidates || []);
+  if (!uniqueCandidates.length) {
+    return Promise.resolve(null);
+  }
+  if (!walletPickerModal || !walletPickerGrid) {
+    return Promise.resolve(uniqueCandidates[0]);
+  }
+
+  return new Promise((resolve) => {
+    let settled = false;
+
+    const done = (picked) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      walletPickerModal.hidden = true;
+      document.body.classList.remove("modal-open");
+      resolve(picked || null);
+    };
+
+    const onOverlayClick = (event) => {
+      if (event.target === walletPickerModal) {
+        done(null);
+      }
+    };
+    const onCloseClick = () => done(null);
+    const onKeydown = (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        done(null);
+      }
+    };
+
+    const cleanup = () => {
+      walletPickerModal.removeEventListener("click", onOverlayClick);
+      document.removeEventListener("keydown", onKeydown);
+      if (walletPickerClose) {
+        walletPickerClose.removeEventListener("click", onCloseClick);
+      }
+    };
+
+    walletPickerGrid.innerHTML = "";
+    uniqueCandidates.forEach((item) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "wallet-picker-item";
+      if (preferredId && item.id === preferredId) {
+        button.style.borderColor = "#5a9cff";
+      }
+
+      const badge = document.createElement("span");
+      badge.className = "wallet-picker-icon";
+      const iconUrl = getWalletIconUrl(item);
+      if (iconUrl) {
+        const img = document.createElement("img");
+        img.src = iconUrl;
+        img.alt = item.name;
+        img.loading = "lazy";
+        img.decoding = "async";
+        img.referrerPolicy = "no-referrer";
+        img.addEventListener("error", () => {
+          badge.classList.add("is-fallback");
+          badge.textContent = getWalletPickerBadge(item.name);
+        });
+        badge.appendChild(img);
+      } else {
+        badge.classList.add("is-fallback");
+        badge.textContent = getWalletPickerBadge(item.name);
+      }
+
+      const name = document.createElement("span");
+      name.className = "wallet-picker-name";
+      if (String(item.name || "").replace(/\s+/g, "").length >= 12) {
+        name.classList.add("compact");
+      }
+      name.textContent = item.name;
+
+      button.appendChild(badge);
+      button.appendChild(name);
+      button.addEventListener("click", () => done(item));
+      walletPickerGrid.appendChild(button);
+    });
+
+    walletPickerModal.hidden = false;
+    document.body.classList.add("modal-open");
+    walletPickerModal.addEventListener("click", onOverlayClick);
+    document.addEventListener("keydown", onKeydown);
+    if (walletPickerClose) {
+      walletPickerClose.addEventListener("click", onCloseClick);
+    }
+
+    const firstButton = walletPickerGrid.querySelector("button");
+    if (firstButton) {
+      setTimeout(() => firstButton.focus(), 0);
+    }
+  });
+}
+
 function toCandidate(providerItem, source, info = null) {
+  const rdns = String(info && info.rdns ? info.rdns : "").trim().toLowerCase();
+  const infoName = String(info && info.name ? info.name : "").trim().toLowerCase();
+  let identity = "";
+  if (rdns) {
+    identity = rdns;
+  } else if (infoName) {
+    identity = infoName.replace(/[^a-z0-9]+/g, "-");
+  } else if (providerItem && providerItem.isMetaMask) {
+    identity = "metamask";
+  } else if (providerItem && providerItem.isRabby) {
+    identity = "rabby";
+  } else if (providerItem && (providerItem.isOkxWallet || providerItem.isOKExWallet)) {
+    identity = "okx";
+  } else if (providerItem && (providerItem.isBitKeep || providerItem.isBitgetWallet)) {
+    identity = "bitget";
+  } else if (providerItem && providerItem.isCoinbaseWallet) {
+    identity = "coinbase";
+  } else if (providerItem && (providerItem.isTrust || providerItem.isTrustWallet)) {
+    identity = "trustwallet";
+  } else {
+    identity = "wallet";
+  }
   return {
     provider: providerItem,
     source,
+    id: `${source}:${identity}`,
     info,
     name: getProviderName(providerItem, info)
   };
@@ -2221,12 +2579,29 @@ function pickBestProvider() {
   const candidates = collectProviderCandidates();
   if (!candidates.length) return null;
 
+  if (currentProviderPref && currentProviderPref !== "auto") {
+    const preferred = candidates.find((item) => item.id === currentProviderPref);
+    if (preferred) {
+      return {
+        chosen: preferred.provider,
+        chosenEntry: preferred,
+        candidates,
+        preferredMissing: false
+      };
+    }
+  }
+
   const metamask = candidates.find((item) =>
     (item.provider && item.provider.isMetaMask) ||
     String(item.info && item.info.rdns ? item.info.rdns : "").toLowerCase().includes("metamask")
   );
   const chosenEntry = metamask || candidates[0];
-  return { chosen: chosenEntry.provider, chosenEntry, candidates };
+  return {
+    chosen: chosenEntry.provider,
+    chosenEntry,
+    candidates,
+    preferredMissing: Boolean(currentProviderPref && currentProviderPref !== "auto")
+  };
 }
 
 function updateProviderDebug() {
@@ -2236,6 +2611,8 @@ function updateProviderDebug() {
       ? window.ethereum.providers.filter(Boolean).length
       : 1)
     : 0;
+  const candidates = collectProviderCandidates();
+  renderProviderSelector(candidates);
   providerDebugValue.textContent = t("providerDebugTemplate", {
     ethereum: hasEthereum ? t("yes") : t("no"),
     injected: injectedCount,
@@ -2278,6 +2655,9 @@ async function detectProvider(showNotFoundLog = true) {
   updateProviderDebug();
 
   if (picked) {
+    if (showNotFoundLog && picked.preferredMissing && currentProviderPref !== "auto") {
+      logT("logPreferredProviderMissing", { provider: getProviderLabelByPreference(currentProviderPref) });
+    }
     provider = picked.chosen;
     providerName = picked.chosenEntry.name || getProviderName(provider);
     const total = picked.candidates.length;
@@ -2300,6 +2680,43 @@ async function detectProvider(showNotFoundLog = true) {
     }
   }
   return false;
+}
+
+async function detectProviderForConnect(showNotFoundLog = true) {
+  const picked = await waitForInjectedProvider(4500);
+  updateProviderDebug();
+  const injectedCandidates = picked ? picked.candidates : [];
+  if (!picked && showNotFoundLog) {
+    logT("logNoProviderFound");
+    logT("logCandidates", { candidates: describeCandidates(injectedCandidates) });
+    if (window.location && window.location.protocol === "file:") {
+      logT("logFileProtocol");
+    } else if (window.location) {
+      logT("logCurrentOrigin", { origin: window.location.origin || t("unknown") });
+    }
+  }
+
+  const pickerCandidates = buildWalletPickerCandidates(injectedCandidates);
+  const defaultPickId = currentProviderPref && currentProviderPref !== "auto"
+    ? currentProviderPref
+    : ((picked && picked.chosenEntry && picked.chosenEntry.id) ? picked.chosenEntry.id : "");
+  const pickedEntry = await showWalletPicker(pickerCandidates, defaultPickId);
+  if (!pickedEntry) {
+    logT("logWalletPickerCanceled");
+    return false;
+  }
+
+  provider = pickedEntry.provider;
+  providerName = pickedEntry.name || getProviderName(provider, pickedEntry.info);
+  currentProviderPref = pickedEntry.id || "auto";
+  providerPreAuthorized = false;
+  const total = injectedCandidates.length;
+  if (total > 1) {
+    logT("logProviderSelectedMulti", { provider: providerName, count: total });
+  } else {
+    logT("logProviderSelectedSingle", { provider: providerName });
+  }
+  return true;
 }
 
 function runDiagnostics() {
@@ -2391,11 +2808,13 @@ async function syncAccountAndChain() {
 async function connectWallet() {
   try {
     setButtonBusy(connectBtn, true, t("btnConnecting"));
-    const ok = await detectProvider();
+    const ok = await detectProviderForConnect();
     if (!ok) return;
 
     bindProviderEvents();
-    await requestAccountsWithTimeout();
+    if (!providerPreAuthorized) {
+      await requestAccountsWithTimeout();
+    }
     if (REQUIRED_NETWORK) {
       const switched = await ensureRequiredNetwork();
       if (!switched) {
@@ -2428,6 +2847,7 @@ async function connectWallet() {
     logT("logConnectFailed", { codeSuffix, message: getErrorMessage(error) });
     await syncAccountAndChain().catch(() => {});
   } finally {
+    providerPreAuthorized = false;
     setButtonBusy(connectBtn, false);
   }
 }
@@ -2489,6 +2909,7 @@ async function init() {
   pendingReferrer = parseReferrerFromUrl();
   currentLangPref = loadLanguagePreference();
   currentLang = currentLangPref === "auto" ? detectSystemLang() : currentLangPref;
+  currentProviderPref = loadProviderPreference();
   currentThemePref = loadThemePreference();
   applyTheme();
   setupSystemThemeWatcher();
@@ -2529,6 +2950,12 @@ async function init() {
 if (langSelect) {
   langSelect.addEventListener("change", (event) => {
     setLanguagePreference(String(event.target.value || "auto"));
+  });
+}
+
+if (providerSelect) {
+  providerSelect.addEventListener("change", (event) => {
+    setProviderPreference(String(event.target.value || "auto"));
   });
 }
 

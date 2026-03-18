@@ -4,16 +4,59 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BSC Wallet Connect</title>
+  <script>
+    (function applyBootTheme() {
+      try {
+        var pref = localStorage.getItem("wallet-connect:theme-pref") || "auto";
+        var isDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var theme = "night";
+        if (pref === "auto") {
+          theme = isDark ? "night" : "light";
+        } else if (pref === "light" || pref === "color" || pref === "night") {
+          theme = pref;
+        }
+        document.documentElement.setAttribute("data-theme", theme);
+      } catch (error) {
+        document.documentElement.setAttribute("data-theme", "night");
+      }
+    })();
+  </script>
   <style>
     :root {
-      --bg: #0b1020;
-      --bg-soft: #131b34;
-      --panel: #172244;
-      --text: #eaf0ff;
-      --muted: #9fb2d4;
-      --ok: #4cd97b;
-      --warn: #f0b429;
-      --line: #28417a;
+      --bg: #050505;
+      --bg-soft: #111111;
+      --panel: #191919;
+      --text: #f3f3f3;
+      --muted: #ababab;
+      --ok: #22c55e;
+      --warn: #ef4444;
+      --line: #343434;
+      --btn: #f0f0f0;
+      --btn-hover: #d8d8d8;
+    }
+
+    html[data-theme="color"] {
+      --bg: #6f9fb8;
+      --bg-soft: #5f8ea8;
+      --panel: #d7e8f1;
+      --text: #152f42;
+      --muted: #506779;
+      --ok: #22c55e;
+      --warn: #ef4444;
+      --line: #86a9bc;
+      --btn: #3f7fa3;
+      --btn-hover: #346f91;
+    }
+
+    html[data-theme="light"] {
+      --bg: #f5f7fc;
+      --bg-soft: #edf2fb;
+      --panel: #ffffff;
+      --text: #1a2740;
+      --muted: #5e6f8f;
+      --ok: #2a9a5b;
+      --warn: #e04848;
+      --line: #d3ddf0;
       --btn: #2f6fed;
       --btn-hover: #275ed1;
     }
@@ -28,9 +71,9 @@
       font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
       color: var(--text);
       background:
-        radial-gradient(1200px 700px at 20% 0%, #1d2f5e 0%, transparent 60%),
-        radial-gradient(900px 500px at 100% 20%, #0f3b50 0%, transparent 55%),
-        linear-gradient(180deg, var(--bg), #070a13);
+        radial-gradient(1200px 700px at 20% 0%, #2f2f2f 0%, transparent 58%),
+        radial-gradient(900px 500px at 100% 20%, #1e1e1e 0%, transparent 55%),
+        linear-gradient(180deg, #0a0a0a, var(--bg));
       display: grid;
       place-items: center;
       padding: 24px;
@@ -38,7 +81,7 @@
 
     .card {
       width: min(880px, 100%);
-      background: linear-gradient(180deg, #16264d 0%, #111b36 100%);
+      background: linear-gradient(180deg, #161616 0%, #0f0f0f 100%);
       border: 1px solid var(--line);
       border-radius: 18px;
       box-shadow: 0 20px 70px rgba(0, 0, 0, 0.45);
@@ -51,22 +94,32 @@
       padding: 10px 14px 0;
     }
 
-    .lang-switch {
+    .topbar-controls {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      border: 1px solid rgba(118, 164, 255, 0.7);
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .lang-switch,
+    .theme-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #454545;
       border-radius: 999px;
-      background: rgba(12, 22, 44, 0.9);
+      background: rgba(12, 12, 12, 0.95);
       box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.12),
-        0 6px 16px rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(58, 109, 225, 0.24);
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 6px 16px rgba(0, 0, 0, 0.35),
+        0 0 0 1px rgba(255, 255, 255, 0.08);
       padding: 4px 9px;
     }
 
-    .lang-select-label {
-      color: #d7e5ff;
+    .lang-select-label,
+    .theme-select-label {
+      color: #d4d4d4;
       font-size: 11px;
       font-weight: 700;
       letter-spacing: 0.04em;
@@ -74,10 +127,11 @@
       opacity: 1;
     }
 
-    .lang-select {
-      border: 1px solid rgba(120, 172, 255, 0.85);
+    .lang-select,
+    .theme-select {
+      border: 1px solid #616161;
       border-radius: 999px;
-      background: linear-gradient(180deg, rgba(35, 55, 104, 0.98), rgba(24, 39, 78, 0.98));
+      background: linear-gradient(180deg, #2a2a2a, #1b1b1b);
       color: var(--text);
       min-width: 176px;
       height: 34px;
@@ -86,36 +140,41 @@
       font-weight: 700;
       line-height: 1.1;
       box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.16),
-        0 0 0 1px rgba(76, 126, 240, 0.16);
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        0 0 0 1px rgba(255, 255, 255, 0.08);
     }
 
-    .lang-select:hover {
-      border-color: #8db8ff;
-      background: linear-gradient(180deg, rgba(43, 67, 122, 0.98), rgba(28, 46, 89, 0.98));
+    .lang-select:hover,
+    .theme-select:hover {
+      border-color: #787878;
+      background: linear-gradient(180deg, #323232, #232323);
     }
 
-    .lang-select:focus {
+    .lang-select:focus,
+    .theme-select:focus {
       outline: none;
-      border-color: #9fc3ff;
+      border-color: #9a9a9a;
       box-shadow:
-        0 0 0 3px rgba(126, 177, 255, 0.32),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        0 0 0 3px rgba(255, 255, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14);
     }
 
-    .lang-select option {
-      color: #0f234d;
-      background: #f2f6ff;
+    .lang-select option,
+    .theme-select option {
+      color: #111111;
+      background: #f5f5f5;
       font-weight: 700;
     }
 
     @media (max-width: 640px) {
-      .lang-select-label {
+      .lang-select-label,
+      .theme-select-label {
         display: none;
       }
 
-      .lang-select {
-        min-width: 152px;
+      .lang-select,
+      .theme-select {
+        min-width: 132px;
         height: 32px;
       }
     }
@@ -166,6 +225,7 @@
       cursor: pointer;
       background: var(--btn);
       border: none;
+      color: #121212;
       transition: background-color 0.15s ease;
       font-weight: 600;
     }
@@ -175,11 +235,13 @@
     }
 
     button.secondary {
-      background: #31487d;
+      background: #2a2a2a;
+      border: 1px solid #3c3c3c;
+      color: var(--text);
     }
 
     button.secondary:hover {
-      background: #2b3f6e;
+      background: #353535;
     }
 
     button:disabled,
@@ -190,7 +252,7 @@
     }
 
     input::placeholder {
-      color: #8fa4cd;
+      color: #8e8e8e;
     }
 
     .status-pill {
@@ -200,7 +262,7 @@
       border: 1px solid var(--line);
       border-radius: 999px;
       padding: 8px 12px;
-      background: rgba(16, 31, 66, 0.7);
+      background: rgba(255, 255, 255, 0.03);
       font-size: 13px;
       color: var(--muted);
     }
@@ -209,7 +271,7 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: #7788af;
+      background: #6f6f6f;
     }
 
     .dot.ok {
@@ -230,7 +292,7 @@
       border: 1px solid var(--line);
       border-radius: 12px;
       padding: 12px;
-      background: rgba(14, 24, 50, 0.75);
+      background: rgba(255, 255, 255, 0.02);
     }
 
     .section-title {
@@ -276,8 +338,8 @@
       border: 1px solid var(--line);
       border-radius: 12px;
       padding: 12px;
-      background: rgba(11, 18, 38, 0.8);
-      color: #c9d7f8;
+      background: rgba(0, 0, 0, 0.62);
+      color: #e0e0e0;
       font-family: Consolas, Menlo, Monaco, monospace;
       font-size: 12px;
       min-height: 56px;
@@ -291,6 +353,52 @@
       color: var(--muted);
     }
 
+    .x-link {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 1500;
+      width: 48px;
+      height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      border: 1px solid #5a5a5a;
+      background: linear-gradient(180deg, rgba(34, 34, 34, 0.96), rgba(15, 15, 15, 0.96));
+      box-shadow:
+        0 10px 26px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      color: #f2f2f2;
+      text-decoration: none;
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .x-link:hover {
+      transform: translateY(-2px);
+      border-color: #7f7f7f;
+      background: linear-gradient(180deg, rgba(48, 48, 48, 0.98), rgba(22, 22, 22, 0.98));
+    }
+
+    .x-link svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    .contract-mobile-value {
+      display: none;
+      margin: 8px 0 0;
+      padding: 10px 12px;
+      border: 1px dashed rgba(168, 168, 168, 0.82);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      color: #e3e3e3;
+      word-break: break-all;
+      line-height: 1.45;
+      font-size: 12px;
+    }
+
     .toast {
       position: fixed;
       top: 50%;
@@ -299,9 +407,9 @@
       max-width: min(88vw, 360px);
       padding: 10px 14px;
       border-radius: 10px;
-      border: 1px solid rgba(131, 186, 255, 0.75);
-      background: linear-gradient(180deg, rgba(31, 74, 171, 0.96), rgba(24, 56, 128, 0.96));
-      color: #eaf0ff;
+      border: 1px solid rgba(255, 255, 255, 0.78);
+      background: linear-gradient(180deg, rgba(244, 244, 244, 0.98), rgba(221, 221, 221, 0.98));
+      color: #0f0f0f;
       font-size: 13px;
       font-weight: 700;
       letter-spacing: 0.01em;
@@ -322,15 +430,270 @@
       .toast {
         max-width: min(92vw, 420px);
       }
+
+      #contractRow {
+        display: none;
+      }
+
+      .contract-mobile-value {
+        display: block;
+      }
+
+      .x-link {
+        right: 12px;
+        bottom: 76px;
+        width: 44px;
+        height: 44px;
+      }
+
+      .x-link svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    html[data-theme="color"] body {
+      background:
+        radial-gradient(1200px 700px at 20% 0%, #bfd7e4 0%, transparent 58%),
+        radial-gradient(900px 500px at 100% 20%, #9fc1d2 0%, transparent 55%),
+        linear-gradient(180deg, #88acbe, #6f95a9);
+    }
+
+    html[data-theme="color"] .card {
+      background: linear-gradient(180deg, #e8f1f6 0%, #cedfe9 100%);
+    }
+
+    html[data-theme="color"] .lang-switch,
+    html[data-theme="color"] .theme-switch {
+      border: 1px solid rgba(120, 154, 172, 0.9);
+      background: rgba(222, 237, 245, 0.95);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.82),
+        0 6px 16px rgba(35, 73, 95, 0.14),
+        0 0 0 1px rgba(82, 126, 150, 0.16);
+    }
+
+    html[data-theme="color"] .lang-select-label,
+    html[data-theme="color"] .theme-select-label {
+      color: #3d5669;
+    }
+
+    html[data-theme="color"] .lang-select,
+    html[data-theme="color"] .theme-select {
+      border: 1px solid rgba(128, 165, 185, 0.9);
+      background: linear-gradient(180deg, rgba(234, 245, 251, 0.98), rgba(214, 230, 240, 0.98));
+      color: #1d3f54;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.78),
+        0 0 0 1px rgba(89, 129, 151, 0.14);
+    }
+
+    html[data-theme="color"] .lang-select:hover,
+    html[data-theme="color"] .theme-select:hover {
+      border-color: #6b9bb8;
+      background: linear-gradient(180deg, rgba(241, 249, 253, 0.99), rgba(206, 225, 237, 0.99));
+    }
+
+    html[data-theme="color"] .lang-select:focus,
+    html[data-theme="color"] .theme-select:focus {
+      border-color: #4f88aa;
+      box-shadow:
+        0 0 0 3px rgba(73, 126, 156, 0.24),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    html[data-theme="color"] .lang-select option,
+    html[data-theme="color"] .theme-select option {
+      color: #1e4055;
+      background: #e9f2f7;
+    }
+
+    html[data-theme="color"] button {
+      color: #ffffff;
+    }
+
+    html[data-theme="color"] button.secondary {
+      background: #c3d8e5;
+      border: 1px solid #9dbdcc;
+      color: #1f445b;
+    }
+
+    html[data-theme="color"] button.secondary:hover {
+      background: #b6cfde;
+    }
+
+    html[data-theme="color"] input::placeholder {
+      color: #607f93;
+    }
+
+    html[data-theme="color"] .status-pill {
+      background: rgba(209, 226, 236, 0.92);
+    }
+
+    html[data-theme="color"] .panel {
+      background: rgba(228, 240, 247, 0.86);
+    }
+
+    html[data-theme="color"] .log {
+      background: rgba(207, 225, 236, 0.92);
+      color: #1c3e52;
+    }
+
+    html[data-theme="color"] .x-link {
+      border: 1px solid rgba(116, 158, 180, 0.9);
+      background: linear-gradient(180deg, rgba(232, 243, 249, 0.98), rgba(203, 223, 234, 0.98));
+      color: #1d4257;
+      box-shadow:
+        0 10px 26px rgba(35, 73, 95, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    html[data-theme="color"] .x-link:hover {
+      border-color: #5e93b2;
+      background: linear-gradient(180deg, rgba(240, 248, 252, 1), rgba(188, 214, 229, 1));
+    }
+
+    html[data-theme="color"] .contract-mobile-value {
+      border: 1px dashed rgba(119, 159, 180, 0.9);
+      background: rgba(212, 228, 237, 0.9);
+      color: #1f455b;
+    }
+
+    html[data-theme="color"] .toast {
+      border: 1px solid rgba(111, 157, 180, 0.9);
+      background: linear-gradient(180deg, rgba(238, 247, 252, 0.98), rgba(199, 220, 232, 0.98));
+      color: #1c4258;
+    }
+
+    html[data-theme="light"] body {
+      background:
+        radial-gradient(1200px 700px at 20% 0%, #ffffff 0%, transparent 58%),
+        radial-gradient(900px 500px at 100% 20%, #e9f0ff 0%, transparent 55%),
+        linear-gradient(180deg, #f8fbff, #eef3fb);
+    }
+
+    html[data-theme="light"] .card {
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      box-shadow: 0 18px 48px rgba(46, 83, 140, 0.12);
+    }
+
+    html[data-theme="light"] .lang-switch,
+    html[data-theme="light"] .theme-switch {
+      border: 1px solid #cdd9ef;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.95),
+        0 6px 16px rgba(28, 58, 109, 0.08),
+        0 0 0 1px rgba(47, 111, 237, 0.08);
+    }
+
+    html[data-theme="light"] .lang-select-label,
+    html[data-theme="light"] .theme-select-label {
+      color: #3f5378;
+    }
+
+    html[data-theme="light"] .lang-select,
+    html[data-theme="light"] .theme-select {
+      border: 1px solid #bed0f2;
+      background: linear-gradient(180deg, #fdfefe, #f1f6ff);
+      color: #1a2740;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.95),
+        0 0 0 1px rgba(45, 109, 236, 0.08);
+    }
+
+    html[data-theme="light"] .lang-select:hover,
+    html[data-theme="light"] .theme-select:hover {
+      border-color: #9eb9ea;
+      background: linear-gradient(180deg, #ffffff, #ebf3ff);
+    }
+
+    html[data-theme="light"] .lang-select:focus,
+    html[data-theme="light"] .theme-select:focus {
+      border-color: #7da4ec;
+      box-shadow:
+        0 0 0 3px rgba(78, 135, 236, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    }
+
+    html[data-theme="light"] .lang-select option,
+    html[data-theme="light"] .theme-select option {
+      color: #1a2740;
+      background: #f7faff;
+    }
+
+    html[data-theme="light"] button {
+      color: #ffffff;
+    }
+
+    html[data-theme="light"] button.secondary {
+      background: #e8eefb;
+      border: 1px solid #c8d7f4;
+      color: #22345a;
+    }
+
+    html[data-theme="light"] button.secondary:hover {
+      background: #dae5fa;
+    }
+
+    html[data-theme="light"] input::placeholder {
+      color: #7f91b2;
+    }
+
+    html[data-theme="light"] .status-pill {
+      background: rgba(239, 245, 255, 0.9);
+    }
+
+    html[data-theme="light"] .panel {
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 4px 12px rgba(38, 77, 142, 0.06);
+    }
+
+    html[data-theme="light"] .log {
+      background: rgba(243, 247, 255, 0.95);
+      color: #1f3153;
+    }
+
+    html[data-theme="light"] .x-link {
+      border: 1px solid #bfd1f0;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(238, 245, 255, 0.98));
+      color: #1d3157;
+      box-shadow:
+        0 10px 26px rgba(46, 83, 140, 0.14),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    }
+
+    html[data-theme="light"] .x-link:hover {
+      border-color: #92aee0;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(228, 238, 255, 1));
+    }
+
+    html[data-theme="light"] .contract-mobile-value {
+      border: 1px dashed rgba(133, 162, 215, 0.9);
+      background: rgba(242, 248, 255, 0.95);
+      color: #27406a;
+    }
+
+    html[data-theme="light"] .toast {
+      border: 1px solid rgba(129, 166, 233, 0.9);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(236, 245, 255, 0.98));
+      color: #1f3255;
+      box-shadow: 0 12px 30px rgba(42, 77, 133, 0.18);
     }
   </style>
 </head>
 <body>
   <main class="card">
     <section class="topbar">
-      <div id="langSwitch" class="lang-switch" aria-label="语言切换">
-        <span id="langSelectLabel" class="lang-select-label">语言</span>
-        <select id="langSelect" class="lang-select"></select>
+      <div class="topbar-controls">
+        <div id="themeSwitch" class="theme-switch" aria-label="主题切换">
+          <span id="themeSelectLabel" class="theme-select-label">主题</span>
+          <select id="themeSelect" class="theme-select"></select>
+        </div>
+        <div id="langSwitch" class="lang-switch" aria-label="语言切换">
+          <span id="langSelectLabel" class="lang-select-label">语言</span>
+          <select id="langSelect" class="lang-select"></select>
+        </div>
       </div>
     </section>
 
@@ -362,10 +725,11 @@
         <p id="contributionDesc" class="section-desc">
           每个地址可领取 100；通过邀请链接成功邀请新地址领取后，邀请人获得 50。贡献值不可转账，仅用于平台贡献记录。
         </p>
-        <div class="row" style="margin-top:10px;">
+        <div id="contractRow" class="row" style="margin-top:10px;">
           <input id="contractAddressInput" class="input-grow mono" type="text" placeholder="输入 ContributionToken 合约地址（0x...）" />
           <button id="saveContractBtn" class="secondary">保存合约地址</button>
         </div>
+        <p id="contractMobileValue" class="contract-mobile-value mono">-</p>
         <div class="row">
           <button id="claimBtn">领取 100 贡献值</button>
           <button id="copyInviteBtn" class="secondary">复制邀请链接</button>
@@ -413,10 +777,23 @@
       <p id="hintText" class="hint">提示：请勿通过 file:// 打开。请使用 localhost 或线上 HTTPS 域名。</p>
     </section>
   </main>
+  <a
+    class="x-link"
+    href="https://x.com/CoinAnd_Labs"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="CoinAnd Labs on X"
+    title="CoinAnd Labs on X"
+  >
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M18.901 1.153h3.68l-8.037 9.188L24 22.847h-7.406l-5.8-7.584-6.638 7.584H.474l8.596-9.825L0 1.153h7.594l5.243 6.932 6.064-6.932zm-1.291 19.497h2.04L6.486 3.234H4.298L17.61 20.65z"/>
+    </svg>
+  </a>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>
+
 

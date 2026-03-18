@@ -6,6 +6,12 @@ const I18N = {
     appSubtitle: "连接 EVM 钱包（MetaMask、Rabby、OKX、Bitget 等），当前仅开放 BSC 主网，其他公链已隐藏备用。",
     langSwitchAria: "语言切换",
     langSelectLabel: "语言",
+    themeSwitchAria: "主题切换",
+    themeSelectLabel: "主题",
+    themeAuto: "跟随系统",
+    themeNight: "夜间模式",
+    themeLight: "日间模式",
+    themeColor: "天空之蓝",
     langAuto: "跟随系统",
     langZh: "简体中文",
     langEn: "English",
@@ -51,6 +57,9 @@ const I18N = {
     yes: "是",
     no: "否",
     none: "无",
+    unknown: "未知",
+    unknownError: "未知错误",
+    providerInjected: "注入式 EVM 钱包",
     unknownChain: "未知 EVM 网络 ({chainId})",
     providerDebugTemplate: "window.ethereum={ethereum} | 注入={injected} | eip6963={eip6963}",
     optionNetwork: "{label} ({chainId})",
@@ -91,6 +100,7 @@ const I18N = {
     logContractCleared: "已清空贡献值合约地址。",
     logContractInvalid: "合约地址无效，请输入正确的 0x 地址。",
     logContractFromUrlPending: "检测到链接中的合约地址（{address}），已预填但未启用。请点击“保存合约地址”确认后生效。",
+    logContractFixed: "贡献值合约已固定：{address}",
     logContractMissing: "请先填写并保存贡献值合约地址。",
     logEthersMissing: "未加载 ethers.js，无法调用合约。",
     logNeedWalletBeforeClaim: "请先连接钱包后再领取贡献值。",
@@ -113,6 +123,12 @@ const I18N = {
     appSubtitle: "Connect EVM wallets (MetaMask, Rabby, OKX, Bitget, etc.). Only BSC mainnet is enabled now; other chains are hidden for future use.",
     langSwitchAria: "Language switch",
     langSelectLabel: "Language",
+    themeSwitchAria: "Theme switch",
+    themeSelectLabel: "Theme",
+    themeAuto: "System",
+    themeNight: "Night mode",
+    themeLight: "Light mode",
+    themeColor: "Sky Blue",
     langAuto: "System",
     langZh: "简体中文",
     langEn: "English",
@@ -158,6 +174,9 @@ const I18N = {
     yes: "yes",
     no: "no",
     none: "none",
+    unknown: "unknown",
+    unknownError: "Unknown error",
+    providerInjected: "Injected EVM Wallet",
     unknownChain: "Unknown EVM chain ({chainId})",
     providerDebugTemplate: "window.ethereum={ethereum} | injected={injected} | eip6963={eip6963}",
     optionNetwork: "{label} ({chainId})",
@@ -198,6 +217,7 @@ const I18N = {
     logContractCleared: "Contribution contract cleared.",
     logContractInvalid: "Invalid contract address. Please input a valid 0x address.",
     logContractFromUrlPending: "Contract address detected in URL ({address}). It is prefilled but not active until you click Save Contract.",
+    logContractFixed: "Contribution contract is fixed: {address}",
     logContractMissing: "Please set and save the contribution contract address first.",
     logEthersMissing: "ethers.js is not loaded. Contract calls are unavailable.",
     logNeedWalletBeforeClaim: "Connect wallet before claiming.",
@@ -223,6 +243,12 @@ const EXTRA_LOCALES = {
     appSubtitle: "Conecta billeteras EVM (MetaMask, Rabby, OKX, Bitget, etc.). Solo BSC mainnet está habilitada por ahora; otras cadenas quedan ocultas para uso futuro.",
     langSwitchAria: "Selector de idioma",
     langSelectLabel: "Idioma",
+    themeSwitchAria: "Selector de tema",
+    themeSelectLabel: "Tema",
+    themeAuto: "Sistema",
+    themeNight: "Modo nocturno",
+    themeLight: "Modo diurno",
+    themeColor: "Azul cielo",
     langAuto: "Sistema",
     btnConnect: "Conectar billetera",
     btnReconnect: "Reconectar",
@@ -251,6 +277,12 @@ const EXTRA_LOCALES = {
     appSubtitle: "Connectez des wallets EVM (MetaMask, Rabby, OKX, Bitget, etc.). Seul le mainnet BSC est activé pour le moment ; les autres réseaux sont masqués pour plus tard.",
     langSwitchAria: "Sélecteur de langue",
     langSelectLabel: "Langue",
+    themeSwitchAria: "Sélecteur de thème",
+    themeSelectLabel: "Thème",
+    themeAuto: "Système",
+    themeNight: "Mode nuit",
+    themeLight: "Mode jour",
+    themeColor: "Bleu ciel",
     langAuto: "Système",
     btnConnect: "Connecter le wallet",
     btnReconnect: "Reconnecter",
@@ -279,6 +311,12 @@ const EXTRA_LOCALES = {
     appSubtitle: "Verbinde EVM-Wallets (MetaMask, Rabby, OKX, Bitget usw.). Aktuell ist nur das BSC-Mainnet aktiv; andere Chains sind für später ausgeblendet.",
     langSwitchAria: "Sprachauswahl",
     langSelectLabel: "Sprache",
+    themeSwitchAria: "Themenauswahl",
+    themeSelectLabel: "Thema",
+    themeAuto: "System",
+    themeNight: "Nachtmodus",
+    themeLight: "Tagmodus",
+    themeColor: "Himmelblau",
     langAuto: "System",
     btnConnect: "Wallet verbinden",
     btnReconnect: "Erneut verbinden",
@@ -307,6 +345,12 @@ const EXTRA_LOCALES = {
     appSubtitle: "Conecte carteiras EVM (MetaMask, Rabby, OKX, Bitget etc.). Apenas a BSC mainnet está habilitada agora; outras redes estão ocultas para uso futuro.",
     langSwitchAria: "Seletor de idioma",
     langSelectLabel: "Idioma",
+    themeSwitchAria: "Seletor de tema",
+    themeSelectLabel: "Tema",
+    themeAuto: "Sistema",
+    themeNight: "Modo noturno",
+    themeLight: "Modo diurno",
+    themeColor: "Azul celeste",
     langAuto: "Sistema",
     btnConnect: "Conectar carteira",
     btnReconnect: "Reconectar",
@@ -335,6 +379,12 @@ const EXTRA_LOCALES = {
     appSubtitle: "Подключайте EVM-кошельки (MetaMask, Rabby, OKX, Bitget и др.). Сейчас включен только BSC mainnet; другие сети скрыты для будущего использования.",
     langSwitchAria: "Выбор языка",
     langSelectLabel: "Язык",
+    themeSwitchAria: "Выбор темы",
+    themeSelectLabel: "Тема",
+    themeAuto: "Система",
+    themeNight: "Ночной режим",
+    themeLight: "Дневной режим",
+    themeColor: "Небесно-голубой",
     langAuto: "Система",
     btnConnect: "Подключить кошелек",
     btnReconnect: "Подключить заново",
@@ -363,6 +413,12 @@ const EXTRA_LOCALES = {
     appSubtitle: "EVMウォレット（MetaMask、Rabby、OKX、Bitget など）を接続します。現在は BSC メインネットのみ有効で、他チェーンは将来用に非表示です。",
     langSwitchAria: "言語セレクター",
     langSelectLabel: "言語",
+    themeSwitchAria: "テーマセレクター",
+    themeSelectLabel: "テーマ",
+    themeAuto: "システム",
+    themeNight: "ナイトモード",
+    themeLight: "ライトモード",
+    themeColor: "スカイブルー",
     langAuto: "システム",
     btnConnect: "ウォレット接続",
     btnReconnect: "再接続",
@@ -391,6 +447,12 @@ const EXTRA_LOCALES = {
     appSubtitle: "EVM 지갑(MetaMask, Rabby, OKX, Bitget 등)을 연결하세요. 현재는 BSC 메인넷만 활성화되어 있으며 다른 체인은 추후 사용을 위해 숨겨져 있습니다.",
     langSwitchAria: "언어 선택",
     langSelectLabel: "언어",
+    themeSwitchAria: "테마 선택",
+    themeSelectLabel: "테마",
+    themeAuto: "시스템",
+    themeNight: "야간 모드",
+    themeLight: "주간 모드",
+    themeColor: "하늘색",
     langAuto: "시스템",
     btnConnect: "지갑 연결",
     btnReconnect: "다시 연결",
@@ -419,6 +481,12 @@ const EXTRA_LOCALES = {
     appSubtitle: "قم بتوصيل محافظ EVM (MetaMask وRabby وOKX وBitget وغيرها). شبكة BSC الرئيسية فقط مفعلة الآن، وتم إخفاء الشبكات الأخرى للاستخدام لاحقًا.",
     langSwitchAria: "محدد اللغة",
     langSelectLabel: "اللغة",
+    themeSwitchAria: "محدد السمة",
+    themeSelectLabel: "السمة",
+    themeAuto: "النظام",
+    themeNight: "الوضع الليلي",
+    themeLight: "الوضع النهاري",
+    themeColor: "أزرق سماوي",
     langAuto: "النظام",
     btnConnect: "اتصال المحفظة",
     btnReconnect: "إعادة الاتصال",
@@ -447,6 +515,12 @@ const EXTRA_LOCALES = {
     appSubtitle: "EVM वॉलेट (MetaMask, Rabby, OKX, Bitget आदि) कनेक्ट करें। अभी केवल BSC मेननेट सक्रिय है; बाकी चेन भविष्य के लिए छिपी हैं।",
     langSwitchAria: "भाषा चयन",
     langSelectLabel: "भाषा",
+    themeSwitchAria: "थीम चयन",
+    themeSelectLabel: "थीम",
+    themeAuto: "सिस्टम",
+    themeNight: "नाइट मोड",
+    themeLight: "डे मोड",
+    themeColor: "आसमानी नीला",
     langAuto: "सिस्टम",
     btnConnect: "वॉलेट कनेक्ट करें",
     btnReconnect: "फिर से कनेक्ट करें",
@@ -475,6 +549,12 @@ const EXTRA_LOCALES = {
     appSubtitle: "EVM cüzdanlarını (MetaMask, Rabby, OKX, Bitget vb.) bağlayın. Şu an yalnızca BSC mainnet açık; diğer zincirler ileride kullanım için gizli.",
     langSwitchAria: "Dil seçici",
     langSelectLabel: "Dil",
+    themeSwitchAria: "Tema seçici",
+    themeSelectLabel: "Tema",
+    themeAuto: "Sistem",
+    themeNight: "Gece modu",
+    themeLight: "Gündüz modu",
+    themeColor: "Gökyüzü mavisi",
     langAuto: "Sistem",
     btnConnect: "Cüzdanı bağla",
     btnReconnect: "Yeniden bağlan",
@@ -503,6 +583,12 @@ const EXTRA_LOCALES = {
     appSubtitle: "Hubungkan dompet EVM (MetaMask, Rabby, OKX, Bitget, dll.). Saat ini hanya BSC mainnet yang aktif; chain lain disembunyikan untuk penggunaan nanti.",
     langSwitchAria: "Pemilih bahasa",
     langSelectLabel: "Bahasa",
+    themeSwitchAria: "Pemilih tema",
+    themeSelectLabel: "Tema",
+    themeAuto: "Sistem",
+    themeNight: "Mode malam",
+    themeLight: "Mode siang",
+    themeColor: "Biru langit",
     langAuto: "Sistem",
     btnConnect: "Hubungkan dompet",
     btnReconnect: "Hubungkan ulang",
@@ -531,6 +617,12 @@ const EXTRA_LOCALES = {
     appSubtitle: "Kết nối ví EVM (MetaMask, Rabby, OKX, Bitget, v.v.). Hiện chỉ bật BSC mainnet; các chain khác được ẩn để dùng sau.",
     langSwitchAria: "Bộ chọn ngôn ngữ",
     langSelectLabel: "Ngôn ngữ",
+    themeSwitchAria: "Bộ chọn giao diện",
+    themeSelectLabel: "Giao diện",
+    themeAuto: "Hệ thống",
+    themeNight: "Chế độ đêm",
+    themeLight: "Chế độ ngày",
+    themeColor: "Xanh da trời",
     langAuto: "Hệ thống",
     btnConnect: "Kết nối ví",
     btnReconnect: "Kết nối lại",
@@ -559,6 +651,12 @@ const EXTRA_LOCALES = {
     appSubtitle: "Connetti wallet EVM (MetaMask, Rabby, OKX, Bitget, ecc.). Al momento è abilitata solo BSC mainnet; le altre chain sono nascoste per uso futuro.",
     langSwitchAria: "Selettore lingua",
     langSelectLabel: "Lingua",
+    themeSwitchAria: "Selettore tema",
+    themeSelectLabel: "Tema",
+    themeAuto: "Sistema",
+    themeNight: "Modalità notte",
+    themeLight: "Modalità giorno",
+    themeColor: "Azzurro cielo",
     langAuto: "Sistema",
     btnConnect: "Connetti wallet",
     btnReconnect: "Riconnetti",
@@ -587,6 +685,12 @@ const EXTRA_LOCALES = {
     appSubtitle: "เชื่อมต่อกระเป๋า EVM (MetaMask, Rabby, OKX, Bitget ฯลฯ) ตอนนี้เปิดใช้งานเฉพาะ BSC mainnet เครือข่ายอื่นซ่อนไว้ใช้ในอนาคต",
     langSwitchAria: "ตัวเลือกภาษา",
     langSelectLabel: "ภาษา",
+    themeSwitchAria: "ตัวเลือกธีม",
+    themeSelectLabel: "ธีม",
+    themeAuto: "ระบบ",
+    themeNight: "โหมดกลางคืน",
+    themeLight: "โหมดกลางวัน",
+    themeColor: "สีฟ้าท้องฟ้า",
     langAuto: "ระบบ",
     btnConnect: "เชื่อมต่อกระเป๋า",
     btnReconnect: "เชื่อมต่อใหม่",
@@ -614,6 +718,335 @@ const EXTRA_LOCALES = {
 
 for (const [code, overrides] of Object.entries(EXTRA_LOCALES)) {
   I18N[code] = { ...I18N.en, ...overrides };
+}
+
+const LOCALE_UI_PATCH = {
+  es: {
+    contributionTitle: "Token de Contribución (BSC)",
+    contributionDesc: "Cada dirección puede reclamar 100. Si un usuario invitado reclama con éxito mediante tu enlace, el invitador recibe 50. Este token no es transferible y solo se usa como puntuación de contribución en la plataforma.",
+    labelContractAddress: "Dirección del contrato",
+    placeholderContractAddress: "Introduce la dirección del contrato ContributionToken (0x...)",
+    btnSaveContract: "Guardar contrato",
+    btnClaim: "Reclamar 100",
+    btnClaimed: "Reclamado",
+    btnClaiming: "Reclamando...",
+    btnCopyInviteLink: "Copiar enlace de invitación",
+    labelContributionBalance: "Saldo de contribución",
+    labelClaimState: "Estado de reclamo",
+    labelInviteRef: "Invitador actual",
+    labelInviteLink: "Mi enlace de invitación",
+    claimStateClaimed: "Reclamado",
+    claimStateUnclaimed: "Sin reclamar",
+    claimStateNeedContract: "Contrato no configurado",
+    inviteRefNone: "Sin invitador",
+    inviteLinkNotReady: "Se generará tras reclamar",
+    unknown: "desconocido",
+    unknownError: "Error desconocido",
+    providerInjected: "Cartera EVM inyectada"
+  },
+  fr: {
+    contributionTitle: "Token de Contribution (BSC)",
+    contributionDesc: "Chaque adresse peut réclamer 100. Si un utilisateur invité réclame avec succès via votre lien, l'invitant reçoit 50. Ce token est non transférable et sert uniquement de score de contribution sur la plateforme.",
+    labelContractAddress: "Adresse du contrat",
+    placeholderContractAddress: "Entrez l'adresse du contrat ContributionToken (0x...)",
+    btnSaveContract: "Enregistrer le contrat",
+    btnClaim: "Réclamer 100",
+    btnClaimed: "Réclamé",
+    btnClaiming: "Réclamation...",
+    btnCopyInviteLink: "Copier le lien d'invitation",
+    labelContributionBalance: "Solde de contribution",
+    labelClaimState: "Statut de réclamation",
+    labelInviteRef: "Parrain actuel",
+    labelInviteLink: "Mon lien d'invitation",
+    claimStateClaimed: "Réclamé",
+    claimStateUnclaimed: "Non réclamé",
+    claimStateNeedContract: "Contrat non défini",
+    inviteRefNone: "Aucun parrain",
+    inviteLinkNotReady: "Sera généré après la réclamation",
+    unknown: "inconnu",
+    unknownError: "Erreur inconnue",
+    providerInjected: "Wallet EVM injecté"
+  },
+  de: {
+    contributionTitle: "Beitrags-Token (BSC)",
+    contributionDesc: "Jede Adresse kann 100 beanspruchen. Wenn ein eingeladener Nutzer über deinen Link erfolgreich beansprucht, erhält der Einladende 50. Dieser Token ist nicht übertragbar und dient nur als Beitragswert auf der Plattform.",
+    labelContractAddress: "Vertragsadresse",
+    placeholderContractAddress: "ContributionToken-Vertragsadresse eingeben (0x...)",
+    btnSaveContract: "Vertrag speichern",
+    btnClaim: "100 beanspruchen",
+    btnClaimed: "Beansprucht",
+    btnClaiming: "Wird beansprucht...",
+    btnCopyInviteLink: "Einladungslink kopieren",
+    labelContributionBalance: "Beitragsguthaben",
+    labelClaimState: "Beanspruchungsstatus",
+    labelInviteRef: "Aktueller Werber",
+    labelInviteLink: "Mein Einladungslink",
+    claimStateClaimed: "Beansprucht",
+    claimStateUnclaimed: "Nicht beansprucht",
+    claimStateNeedContract: "Vertrag nicht gesetzt",
+    inviteRefNone: "Kein Werber",
+    inviteLinkNotReady: "Wird nach dem Beanspruchen erzeugt",
+    unknown: "unbekannt",
+    unknownError: "Unbekannter Fehler",
+    providerInjected: "Injiziertes EVM-Wallet"
+  },
+  pt: {
+    contributionTitle: "Token de Contribuição (BSC)",
+    contributionDesc: "Cada endereço pode reivindicar 100. Se um usuário convidado reivindicar com sucesso pelo seu link, o convidador recebe 50. Este token é intransferível e usado apenas como pontuação de contribuição na plataforma.",
+    labelContractAddress: "Endereço do contrato",
+    placeholderContractAddress: "Insira o endereço do contrato ContributionToken (0x...)",
+    btnSaveContract: "Salvar contrato",
+    btnClaim: "Reivindicar 100",
+    btnClaimed: "Reivindicado",
+    btnClaiming: "Reivindicando...",
+    btnCopyInviteLink: "Copiar link de convite",
+    labelContributionBalance: "Saldo de contribuição",
+    labelClaimState: "Status da reivindicação",
+    labelInviteRef: "Convidador atual",
+    labelInviteLink: "Meu link de convite",
+    claimStateClaimed: "Reivindicado",
+    claimStateUnclaimed: "Não reivindicado",
+    claimStateNeedContract: "Contrato não definido",
+    inviteRefNone: "Sem convidador",
+    inviteLinkNotReady: "Será gerado após reivindicar",
+    unknown: "desconhecido",
+    unknownError: "Erro desconhecido",
+    providerInjected: "Carteira EVM injetada"
+  },
+  ru: {
+    contributionTitle: "Токен вклада (BSC)",
+    contributionDesc: "Каждый адрес может получить 100. Если приглашенный пользователь успешно получит токены по вашей ссылке, пригласивший получает 50. Этот токен нельзя передавать, он используется только как показатель вклада на платформе.",
+    labelContractAddress: "Адрес контракта",
+    placeholderContractAddress: "Введите адрес контракта ContributionToken (0x...)",
+    btnSaveContract: "Сохранить контракт",
+    btnClaim: "Получить 100",
+    btnClaimed: "Получено",
+    btnClaiming: "Выполняется...",
+    btnCopyInviteLink: "Копировать ссылку приглашения",
+    labelContributionBalance: "Баланс вклада",
+    labelClaimState: "Статус получения",
+    labelInviteRef: "Текущий пригласивший",
+    labelInviteLink: "Моя ссылка приглашения",
+    claimStateClaimed: "Получено",
+    claimStateUnclaimed: "Не получено",
+    claimStateNeedContract: "Контракт не настроен",
+    inviteRefNone: "Без пригласившего",
+    inviteLinkNotReady: "Будет создана после получения",
+    unknown: "неизвестно",
+    unknownError: "Неизвестная ошибка",
+    providerInjected: "Инжектированный EVM-кошелек"
+  },
+  ja: {
+    contributionTitle: "貢献トークン（BSC）",
+    contributionDesc: "各アドレスは100を受け取れます。招待リンク経由で新規ユーザーが受け取りに成功すると、招待者は50を獲得します。このトークンは譲渡不可で、プラットフォーム内の貢献度記録のみに使用されます。",
+    labelContractAddress: "コントラクトアドレス",
+    placeholderContractAddress: "ContributionToken コントラクトアドレスを入力 (0x...)",
+    btnSaveContract: "コントラクトを保存",
+    btnClaim: "100を受け取る",
+    btnClaimed: "受け取り済み",
+    btnClaiming: "受け取り中...",
+    btnCopyInviteLink: "招待リンクをコピー",
+    labelContributionBalance: "貢献残高",
+    labelClaimState: "受け取り状態",
+    labelInviteRef: "現在の招待者",
+    labelInviteLink: "私の招待リンク",
+    claimStateClaimed: "受け取り済み",
+    claimStateUnclaimed: "未受け取り",
+    claimStateNeedContract: "コントラクト未設定",
+    inviteRefNone: "招待者なし",
+    inviteLinkNotReady: "受け取り後に自動生成",
+    unknown: "不明",
+    unknownError: "不明なエラー",
+    providerInjected: "インジェクト型 EVM ウォレット"
+  },
+  ko: {
+    contributionTitle: "기여 토큰 (BSC)",
+    contributionDesc: "각 주소는 100을 받을 수 있습니다. 초대 링크로 신규 사용자가 성공적으로 수령하면 초대한 사람은 50을 받습니다. 이 토큰은 전송 불가이며 플랫폼 기여도 기록에만 사용됩니다.",
+    labelContractAddress: "컨트랙트 주소",
+    placeholderContractAddress: "ContributionToken 컨트랙트 주소 입력 (0x...)",
+    btnSaveContract: "컨트랙트 저장",
+    btnClaim: "100 받기",
+    btnClaimed: "수령 완료",
+    btnClaiming: "수령 중...",
+    btnCopyInviteLink: "초대 링크 복사",
+    labelContributionBalance: "기여 잔액",
+    labelClaimState: "수령 상태",
+    labelInviteRef: "현재 추천인",
+    labelInviteLink: "내 초대 링크",
+    claimStateClaimed: "수령 완료",
+    claimStateUnclaimed: "미수령",
+    claimStateNeedContract: "컨트랙트 미설정",
+    inviteRefNone: "추천인 없음",
+    inviteLinkNotReady: "수령 후 자동 생성",
+    unknown: "알 수 없음",
+    unknownError: "알 수 없는 오류",
+    providerInjected: "주입형 EVM 지갑"
+  },
+  ar: {
+    contributionTitle: "رمز المساهمة (BSC)",
+    contributionDesc: "يمكن لكل عنوان المطالبة بـ 100. إذا قام مستخدم مدعو بالمطالبة بنجاح عبر رابطك، يحصل الداعي على 50. هذا الرمز غير قابل للتحويل ويستخدم فقط لتسجيل المساهمة على المنصة.",
+    labelContractAddress: "عنوان العقد",
+    placeholderContractAddress: "أدخل عنوان عقد ContributionToken (0x...)",
+    btnSaveContract: "حفظ العقد",
+    btnClaim: "مطالبة 100",
+    btnClaimed: "تمت المطالبة",
+    btnClaiming: "جارٍ المطالبة...",
+    btnCopyInviteLink: "نسخ رابط الدعوة",
+    labelContributionBalance: "رصيد المساهمة",
+    labelClaimState: "حالة المطالبة",
+    labelInviteRef: "الداعي الحالي",
+    labelInviteLink: "رابط دعوتي",
+    claimStateClaimed: "تمت المطالبة",
+    claimStateUnclaimed: "لم تتم المطالبة",
+    claimStateNeedContract: "العقد غير مضبوط",
+    inviteRefNone: "لا يوجد داعٍ",
+    inviteLinkNotReady: "سيتم إنشاؤه بعد المطالبة",
+    unknown: "غير معروف",
+    unknownError: "خطأ غير معروف",
+    providerInjected: "محفظة EVM مدمجة"
+  },
+  hi: {
+    contributionTitle: "योगदान टोकन (BSC)",
+    contributionDesc: "हर पता 100 क्लेम कर सकता है। यदि आपके आमंत्रण लिंक से नया उपयोगकर्ता सफलतापूर्वक क्लेम करता है, तो आमंत्रक को 50 मिलते हैं। यह टोकन ट्रांसफर नहीं किया जा सकता और केवल प्लेटफ़ॉर्म योगदान रिकॉर्ड के लिए है।",
+    labelContractAddress: "कॉन्ट्रैक्ट पता",
+    placeholderContractAddress: "ContributionToken कॉन्ट्रैक्ट पता दर्ज करें (0x...)",
+    btnSaveContract: "कॉन्ट्रैक्ट सहेजें",
+    btnClaim: "100 क्लेम करें",
+    btnClaimed: "क्लेम किया गया",
+    btnClaiming: "क्लेम हो रहा है...",
+    btnCopyInviteLink: "आमंत्रण लिंक कॉपी करें",
+    labelContributionBalance: "योगदान बैलेंस",
+    labelClaimState: "क्लेम स्थिति",
+    labelInviteRef: "वर्तमान आमंत्रक",
+    labelInviteLink: "मेरा आमंत्रण लिंक",
+    claimStateClaimed: "क्लेम किया गया",
+    claimStateUnclaimed: "अक्लेम्ड",
+    claimStateNeedContract: "कॉन्ट्रैक्ट सेट नहीं है",
+    inviteRefNone: "कोई आमंत्रक नहीं",
+    inviteLinkNotReady: "क्लेम के बाद स्वतः बनेगा",
+    unknown: "अज्ञात",
+    unknownError: "अज्ञात त्रुटि",
+    providerInjected: "इंजेक्टेड EVM वॉलेट"
+  },
+  tr: {
+    contributionTitle: "Katkı Tokeni (BSC)",
+    contributionDesc: "Her adres 100 talep edebilir. Davet bağlantınızla yeni kullanıcı başarılı şekilde talep ederse davet eden 50 alır. Bu token transfer edilemez ve yalnızca platform katkı puanı kaydı için kullanılır.",
+    labelContractAddress: "Sözleşme adresi",
+    placeholderContractAddress: "ContributionToken sözleşme adresini girin (0x...)",
+    btnSaveContract: "Sözleşmeyi kaydet",
+    btnClaim: "100 talep et",
+    btnClaimed: "Talep edildi",
+    btnClaiming: "Talep ediliyor...",
+    btnCopyInviteLink: "Davet bağlantısını kopyala",
+    labelContributionBalance: "Katkı bakiyesi",
+    labelClaimState: "Talep durumu",
+    labelInviteRef: "Mevcut davet eden",
+    labelInviteLink: "Davet bağlantım",
+    claimStateClaimed: "Talep edildi",
+    claimStateUnclaimed: "Talep edilmedi",
+    claimStateNeedContract: "Sözleşme ayarlanmadı",
+    inviteRefNone: "Davet eden yok",
+    inviteLinkNotReady: "Talep sonrası otomatik oluşturulur",
+    unknown: "bilinmiyor",
+    unknownError: "Bilinmeyen hata",
+    providerInjected: "Enjekte EVM cüzdanı"
+  },
+  id: {
+    contributionTitle: "Token Kontribusi (BSC)",
+    contributionDesc: "Setiap alamat dapat klaim 100. Jika pengguna baru yang diundang berhasil klaim lewat tautan Anda, pengundang mendapat 50. Token ini tidak bisa ditransfer dan hanya digunakan untuk catatan skor kontribusi platform.",
+    labelContractAddress: "Alamat kontrak",
+    placeholderContractAddress: "Masukkan alamat kontrak ContributionToken (0x...)",
+    btnSaveContract: "Simpan kontrak",
+    btnClaim: "Klaim 100",
+    btnClaimed: "Sudah klaim",
+    btnClaiming: "Sedang klaim...",
+    btnCopyInviteLink: "Salin tautan undangan",
+    labelContributionBalance: "Saldo kontribusi",
+    labelClaimState: "Status klaim",
+    labelInviteRef: "Pengundang saat ini",
+    labelInviteLink: "Tautan undangan saya",
+    claimStateClaimed: "Sudah klaim",
+    claimStateUnclaimed: "Belum klaim",
+    claimStateNeedContract: "Kontrak belum diatur",
+    inviteRefNone: "Tidak ada pengundang",
+    inviteLinkNotReady: "Akan dibuat setelah klaim",
+    unknown: "tidak diketahui",
+    unknownError: "Kesalahan tidak diketahui",
+    providerInjected: "Dompet EVM terinjeksi"
+  },
+  vi: {
+    contributionTitle: "Token đóng góp (BSC)",
+    contributionDesc: "Mỗi địa chỉ có thể nhận 100. Nếu người dùng mới được mời nhận thành công qua liên kết của bạn, người mời nhận 50. Token này không thể chuyển và chỉ dùng để ghi nhận điểm đóng góp trên nền tảng.",
+    labelContractAddress: "Địa chỉ hợp đồng",
+    placeholderContractAddress: "Nhập địa chỉ hợp đồng ContributionToken (0x...)",
+    btnSaveContract: "Lưu hợp đồng",
+    btnClaim: "Nhận 100",
+    btnClaimed: "Đã nhận",
+    btnClaiming: "Đang nhận...",
+    btnCopyInviteLink: "Sao chép liên kết mời",
+    labelContributionBalance: "Số dư đóng góp",
+    labelClaimState: "Trạng thái nhận",
+    labelInviteRef: "Người mời hiện tại",
+    labelInviteLink: "Liên kết mời của tôi",
+    claimStateClaimed: "Đã nhận",
+    claimStateUnclaimed: "Chưa nhận",
+    claimStateNeedContract: "Chưa cấu hình hợp đồng",
+    inviteRefNone: "Không có người mời",
+    inviteLinkNotReady: "Sẽ tự tạo sau khi nhận",
+    unknown: "không xác định",
+    unknownError: "Lỗi không xác định",
+    providerInjected: "Ví EVM được nhúng"
+  },
+  it: {
+    contributionTitle: "Token di Contributo (BSC)",
+    contributionDesc: "Ogni indirizzo può riscattare 100. Se un utente invitato riscatta con successo tramite il tuo link, l'invitante riceve 50. Questo token non è trasferibile ed è usato solo come punteggio di contributo della piattaforma.",
+    labelContractAddress: "Indirizzo del contratto",
+    placeholderContractAddress: "Inserisci l'indirizzo del contratto ContributionToken (0x...)",
+    btnSaveContract: "Salva contratto",
+    btnClaim: "Riscatta 100",
+    btnClaimed: "Riscattato",
+    btnClaiming: "Riscatto in corso...",
+    btnCopyInviteLink: "Copia link invito",
+    labelContributionBalance: "Saldo contributo",
+    labelClaimState: "Stato riscatto",
+    labelInviteRef: "Invitante attuale",
+    labelInviteLink: "Il mio link invito",
+    claimStateClaimed: "Riscattato",
+    claimStateUnclaimed: "Non riscattato",
+    claimStateNeedContract: "Contratto non impostato",
+    inviteRefNone: "Nessun invitante",
+    inviteLinkNotReady: "Verrà generato dopo il riscatto",
+    unknown: "sconosciuto",
+    unknownError: "Errore sconosciuto",
+    providerInjected: "Wallet EVM iniettato"
+  },
+  th: {
+    contributionTitle: "โทเค็นการมีส่วนร่วม (BSC)",
+    contributionDesc: "แต่ละที่อยู่สามารถรับได้ 100 หากผู้ใช้ใหม่ที่ถูกเชิญรับสำเร็จผ่านลิงก์ของคุณ ผู้เชิญจะได้ 50 โทเค็นนี้โอนไม่ได้ และใช้เพื่อบันทึกคะแนนการมีส่วนร่วมบนแพลตฟอร์มเท่านั้น",
+    labelContractAddress: "ที่อยู่สัญญา",
+    placeholderContractAddress: "กรอกที่อยู่สัญญา ContributionToken (0x...)",
+    btnSaveContract: "บันทึกสัญญา",
+    btnClaim: "รับ 100",
+    btnClaimed: "รับแล้ว",
+    btnClaiming: "กำลังรับ...",
+    btnCopyInviteLink: "คัดลอกลิงก์เชิญ",
+    labelContributionBalance: "ยอดคงเหลือการมีส่วนร่วม",
+    labelClaimState: "สถานะการรับ",
+    labelInviteRef: "ผู้เชิญปัจจุบัน",
+    labelInviteLink: "ลิงก์เชิญของฉัน",
+    claimStateClaimed: "รับแล้ว",
+    claimStateUnclaimed: "ยังไม่รับ",
+    claimStateNeedContract: "ยังไม่ได้ตั้งค่าสัญญา",
+    inviteRefNone: "ไม่มีผู้เชิญ",
+    inviteLinkNotReady: "จะสร้างอัตโนมัติหลังรับ",
+    unknown: "ไม่ทราบ",
+    unknownError: "ข้อผิดพลาดที่ไม่ทราบ",
+    providerInjected: "กระเป๋า EVM แบบฝัง"
+  }
+};
+
+for (const [code, overrides] of Object.entries(LOCALE_UI_PATCH)) {
+  I18N[code] = { ...I18N[code], ...overrides };
 }
 
 const SUPPORTED_LANGS = Object.freeze([
@@ -659,7 +1092,24 @@ const NETWORKS = [
   {
     key: "bsc",
     enabled: true,
-    label: { zh: "BSC 主网", en: "BSC Mainnet" },
+    label: {
+      zh: "BSC 主网",
+      en: "BSC Mainnet",
+      es: "BSC Red principal",
+      fr: "BSC Réseau principal",
+      de: "BSC Hauptnetz",
+      pt: "BSC Rede principal",
+      ru: "BSC основная сеть",
+      ja: "BSC メインネット",
+      ko: "BSC 메인넷",
+      ar: "شبكة BSC الرئيسية",
+      hi: "BSC मेननेट",
+      tr: "BSC ana ağ",
+      id: "BSC Mainnet",
+      vi: "BSC mạng chính",
+      it: "BSC rete principale",
+      th: "BSC เมนเน็ต"
+    },
     chainId: "0x38",
     params: {
       chainId: "0x38",
@@ -753,10 +1203,13 @@ const ACTIVE_NETWORKS = NETWORKS.filter((network) => network.enabled);
 const REQUIRED_NETWORK = ACTIVE_NETWORKS[0] || null;
 
 const LANG_PREF_KEY = "wallet-connect:lang-pref";
+const THEME_PREF_KEY = "wallet-connect:theme-pref";
 const LAST_NETWORK_KEY = "wallet-connect:last-network";
 const CONTRIBUTION_CONTRACT_KEY = "wallet-connect:contribution-contract";
 const MAX_LOG_LINES = 120;
-const DEFAULT_CONTRIBUTION_CONTRACT = "";
+const FIXED_CONTRIBUTION_CONTRACT = "0x4b83289f5A4fCE92552Cd498847ea71Ed7e3359D";
+const USE_FIXED_CONTRIBUTION_CONTRACT = true;
+const DEFAULT_CONTRIBUTION_CONTRACT = FIXED_CONTRIBUTION_CONTRACT;
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 const CONTRIBUTION_TOKEN_ABI = [
   "function hasClaimed(address user) view returns (bool)",
@@ -770,6 +1223,9 @@ const CONTRIBUTION_TOKEN_ABI = [
 const langSwitch = document.getElementById("langSwitch");
 const langSelectLabel = document.getElementById("langSelectLabel");
 const langSelect = document.getElementById("langSelect");
+const themeSwitch = document.getElementById("themeSwitch");
+const themeSelectLabel = document.getElementById("themeSelectLabel");
+const themeSelect = document.getElementById("themeSelect");
 
 const titleText = document.getElementById("titleText");
 const subtitleText = document.getElementById("subtitleText");
@@ -792,6 +1248,7 @@ const contributionBalanceValue = document.getElementById("contributionBalanceVal
 const claimStateValue = document.getElementById("claimStateValue");
 const inviteRefValue = document.getElementById("inviteRefValue");
 const inviteLinkValue = document.getElementById("inviteLinkValue");
+const contractMobileValue = document.getElementById("contractMobileValue");
 
 const connectBtn = document.getElementById("connectBtn");
 const refreshBtn = document.getElementById("refreshBtn");
@@ -814,9 +1271,18 @@ let toastTimer = null;
 
 let currentLangPref = "auto";
 let currentLang = "zh";
+let currentThemePref = "auto";
+let currentTheme = "night";
+
+const THEME_OPTIONS = Object.freeze([
+  { value: "auto", labelKey: "themeAuto" },
+  { value: "night", labelKey: "themeNight" },
+  { value: "light", labelKey: "themeLight" },
+  { value: "color", labelKey: "themeColor" }
+]);
 
 let provider = null;
-let providerName = "Unknown";
+let providerName = t("unknown");
 let boundProvider = null;
 let eipDiscoveryReady = false;
 const eip6963Providers = new Map();
@@ -890,6 +1356,39 @@ function loadLanguagePreference() {
   return "auto";
 }
 
+function loadThemePreference() {
+  try {
+    const saved = localStorage.getItem(THEME_PREF_KEY);
+    if (saved === "auto" || saved === "night" || saved === "light" || saved === "color") {
+      return saved;
+    }
+  } catch (error) {
+    // ignore storage read failure
+  }
+  return "auto";
+}
+
+function detectSystemTheme() {
+  try {
+    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return "night";
+    }
+  } catch (error) {
+    // ignore detection failure
+  }
+  return "light";
+}
+
+function resolveTheme(pref = currentThemePref) {
+  if (pref === "auto") {
+    return detectSystemTheme();
+  }
+  if (pref === "color" || pref === "light" || pref === "night") {
+    return pref;
+  }
+  return "night";
+}
+
 function getNetworkLabel(network) {
   if (!network) return "";
   if (typeof network.label === "string") return network.label;
@@ -919,6 +1418,39 @@ function renderLanguageSelector() {
     }
   });
   langSelect.value = currentLangPref;
+}
+
+function applyTheme() {
+  currentTheme = resolveTheme(currentThemePref);
+  document.documentElement.dataset.theme = currentTheme;
+  if (document.body) {
+    document.body.dataset.theme = currentTheme;
+  }
+}
+
+function renderThemeSelector() {
+  if (themeSwitch) {
+    themeSwitch.setAttribute("aria-label", t("themeSwitchAria"));
+  }
+  if (themeSelectLabel) {
+    themeSelectLabel.textContent = t("themeSelectLabel");
+  }
+  if (!themeSelect) return;
+
+  const mustRebuild = themeSelect.options.length !== THEME_OPTIONS.length;
+  if (mustRebuild) {
+    themeSelect.innerHTML = "";
+  }
+
+  THEME_OPTIONS.forEach((item, index) => {
+    const option = mustRebuild ? document.createElement("option") : themeSelect.options[index];
+    option.value = item.value;
+    option.textContent = t(item.labelKey);
+    if (mustRebuild) {
+      themeSelect.appendChild(option);
+    }
+  });
+  themeSelect.value = currentThemePref;
 }
 
 function setButtonLabel(button, text) {
@@ -1000,6 +1532,7 @@ function applyLanguage() {
   setButtonLabel(switchBtn, t("btnSwitchBsc", { network: getNetworkLabel(REQUIRED_NETWORK) || "BSC" }));
 
   renderLanguageSelector();
+  renderThemeSelector();
   renderNetworkSelect();
   if (!currentChainId) {
     restoreSelectedNetwork();
@@ -1026,6 +1559,22 @@ function setLanguagePreference(pref, persist = true) {
     }
   }
   applyLanguage();
+}
+
+function setThemePreference(pref, persist = true) {
+  const normalized = pref === "auto" || pref === "color" || pref === "light" || pref === "night"
+    ? pref
+    : "auto";
+  currentThemePref = normalized;
+  applyTheme();
+  renderThemeSelector();
+  if (persist) {
+    try {
+      localStorage.setItem(THEME_PREF_KEY, normalized);
+    } catch (error) {
+      // ignore storage write failure
+    }
+  }
 }
 
 function renderLogBox() {
@@ -1211,10 +1760,10 @@ function restoreSelectedNetwork() {
 }
 
 function getErrorMessage(error) {
-  if (!error) return "Unknown error";
+  if (!error) return t("unknownError");
   if (typeof error === "string") return error;
   const msg = error.shortMessage || error.reason || error.message;
-  return msg || JSON.stringify(error);
+  return msg || JSON.stringify(error) || t("unknownError");
 }
 
 function hasEthersSdk() {
@@ -1240,6 +1789,9 @@ function normalizeAddress(raw) {
 }
 
 function loadContributionContractAddress() {
+  if (USE_FIXED_CONTRIBUTION_CONTRACT) {
+    return DEFAULT_CONTRIBUTION_CONTRACT;
+  }
   try {
     const saved = localStorage.getItem(CONTRIBUTION_CONTRACT_KEY) || "";
     return normalizeAddress(saved) || DEFAULT_CONTRIBUTION_CONTRACT;
@@ -1249,6 +1801,7 @@ function loadContributionContractAddress() {
 }
 
 function persistContributionContractAddress(address) {
+  if (USE_FIXED_CONTRIBUTION_CONTRACT) return;
   try {
     if (!address) {
       localStorage.removeItem(CONTRIBUTION_CONTRACT_KEY);
@@ -1268,10 +1821,36 @@ function parseReferrerFromUrl() {
 }
 
 function parseContractFromUrl() {
+  if (USE_FIXED_CONTRIBUTION_CONTRACT) return "";
   if (!window.location || !window.location.search) return "";
   const params = new URLSearchParams(window.location.search);
   const fromUrl = normalizeAddress(params.get("contract") || "");
   return fromUrl || "";
+}
+
+function setupSystemThemeWatcher() {
+  if (!window.matchMedia) return;
+  const media = window.matchMedia("(prefers-color-scheme: dark)");
+  const onChange = () => {
+    if (currentThemePref !== "auto") return;
+    applyTheme();
+    renderThemeSelector();
+  };
+  if (typeof media.addEventListener === "function") {
+    media.addEventListener("change", onChange);
+  } else if (typeof media.addListener === "function") {
+    media.addListener(onChange);
+  }
+}
+
+function refreshContractDisplay() {
+  const shown = contributionContractAddress || DEFAULT_CONTRIBUTION_CONTRACT || "-";
+  if (contractAddressInput) {
+    contractAddressInput.value = shown;
+  }
+  if (contractMobileValue) {
+    contractMobileValue.textContent = shown;
+  }
 }
 
 function buildInviteLink(address) {
@@ -1294,6 +1873,7 @@ function updateContributionStaticText() {
   setButtonLabel(saveContractBtn, t("btnSaveContract"));
   setButtonLabel(claimBtn, t("btnClaim"));
   setButtonLabel(copyInviteBtn, t("btnCopyInviteLink"));
+  refreshContractDisplay();
 }
 
 function updateContributionDisplayFallback() {
@@ -1400,6 +1980,14 @@ function getClaimReferrer() {
 }
 
 async function saveContributionContractAddress() {
+  if (USE_FIXED_CONTRIBUTION_CONTRACT) {
+    contributionContractAddress = DEFAULT_CONTRIBUTION_CONTRACT;
+    refreshContractDisplay();
+    updateContributionDisplayFallback();
+    updateActionState();
+    logT("logContractFixed", { address: contributionContractAddress });
+    return;
+  }
   const normalized = normalizeAddress(contractAddressInput.value);
   if (!contractAddressInput.value.trim()) {
     contributionContractAddress = "";
@@ -1518,14 +2106,14 @@ function openManualCopyPrompt(text) {
 
 function getProviderName(providerItem, info = null) {
   if (info && info.name) return info.name;
-  if (!providerItem) return "Unknown";
+  if (!providerItem) return t("unknown");
   if (providerItem.isMetaMask) return "MetaMask";
   if (providerItem.isRabby) return "Rabby";
   if (providerItem.isOkxWallet || providerItem.isOKExWallet) return "OKX Wallet";
   if (providerItem.isBitKeep || providerItem.isBitgetWallet) return "Bitget Wallet";
   if (providerItem.isCoinbaseWallet) return "Coinbase Wallet";
   if (providerItem.isTrust || providerItem.isTrustWallet) return "Trust Wallet";
-  return "Injected EVM Wallet";
+  return t("providerInjected");
 }
 
 function toCandidate(providerItem, source, info = null) {
@@ -1669,7 +2257,7 @@ async function detectProvider(showNotFoundLog = true) {
     if (window.location && window.location.protocol === "file:") {
       logT("logFileProtocol");
     } else if (window.location) {
-      logT("logCurrentOrigin", { origin: window.location.origin || "unknown" });
+      logT("logCurrentOrigin", { origin: window.location.origin || t("unknown") });
     }
   }
   return false;
@@ -1680,7 +2268,7 @@ function runDiagnostics() {
   updateProviderDebug();
   const candidates = collectProviderCandidates();
   logT("logDiagnosticOrigin", {
-    origin: window.location.origin || "unknown",
+    origin: window.location.origin || t("unknown"),
     secure: String(window.isSecureContext)
   });
   logT("logDiagnosticProviders", { providers: describeCandidates(candidates) });
@@ -1840,20 +2428,31 @@ function bindProviderEvents() {
 }
 
 async function init() {
+  if (USE_FIXED_CONTRIBUTION_CONTRACT) {
+    contractAddressInput.readOnly = true;
+    contractAddressInput.setAttribute("aria-readonly", "true");
+    saveContractBtn.hidden = true;
+  }
   const contractFromUrl = parseContractFromUrl();
   contributionContractAddress = loadContributionContractAddress();
   pendingReferrer = parseReferrerFromUrl();
   currentLangPref = loadLanguagePreference();
   currentLang = currentLangPref === "auto" ? detectSystemLang() : currentLangPref;
+  currentThemePref = loadThemePreference();
+  applyTheme();
+  setupSystemThemeWatcher();
   applyLanguage();
   clearLog();
   if (contributionContractAddress) {
-    contractAddressInput.value = contributionContractAddress;
+    refreshContractDisplay();
   } else if (contractFromUrl) {
     contractAddressInput.value = contractFromUrl;
     logT("logContractFromUrlPending", { address: contractFromUrl });
   } else {
     contractAddressInput.value = "";
+    if (contractMobileValue) {
+      contractMobileValue.textContent = "-";
+    }
   }
   if (contributionContractAddress && contractFromUrl && contributionContractAddress.toLowerCase() !== contractFromUrl.toLowerCase()) {
     logT("logContractFromUrlPending", { address: contractFromUrl });
@@ -1879,6 +2478,12 @@ async function init() {
 if (langSelect) {
   langSelect.addEventListener("change", (event) => {
     setLanguagePreference(String(event.target.value || "auto"));
+  });
+}
+
+if (themeSelect) {
+  themeSelect.addEventListener("change", (event) => {
+    setThemePreference(String(event.target.value || "auto"));
   });
 }
 

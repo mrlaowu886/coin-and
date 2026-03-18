@@ -76,6 +76,8 @@ const I18N = {
     logWalletConnectedSuccess: "钱包连接成功：{provider}",
     logConnectCanceled: "你在钱包弹窗中取消了连接（4001）。",
     logConnectPending: "钱包中已有待处理连接请求，请先处理后再试。",
+    logConnectTimeout: "连接请求超时。请检查钱包弹窗并完成授权后重试。",
+    logNoAccountAfterConnect: "已检测到钱包，但未返回账户。请在钱包中确认授权并允许当前站点访问。",
     logConnectFailed: "连接失败{codeSuffix}：{message}",
     logSwitchToRequiredFailed: "未能切换到必选网络 {network}，请手动切换后再操作。",
     logAlreadyOnNetwork: "{network} 已经是当前网络。",
@@ -193,6 +195,8 @@ const I18N = {
     logWalletConnectedSuccess: "Wallet connected via {provider}.",
     logConnectCanceled: "Connect canceled in wallet popup (4001).",
     logConnectPending: "A connection request is already pending in your wallet.",
+    logConnectTimeout: "Connection request timed out. Check wallet popup and approve, then try again.",
+    logNoAccountAfterConnect: "Wallet was detected but no account was returned. Approve site access in wallet and retry.",
     logConnectFailed: "Connect failed{codeSuffix}: {message}",
     logSwitchToRequiredFailed: "Could not switch to required network {network}. Please switch manually.",
     logAlreadyOnNetwork: "{network} is already active.",
@@ -1207,6 +1211,7 @@ const THEME_PREF_KEY = "wallet-connect:theme-pref";
 const LAST_NETWORK_KEY = "wallet-connect:last-network";
 const CONTRIBUTION_CONTRACT_KEY = "wallet-connect:contribution-contract";
 const MAX_LOG_LINES = 120;
+const CONNECT_REQUEST_TIMEOUT_MS = 30000;
 const FIXED_CONTRIBUTION_CONTRACT = "0x4b83289f5A4fCE92552Cd498847ea71Ed7e3359D";
 const USE_FIXED_CONTRIBUTION_CONTRACT = true;
 const DEFAULT_CONTRIBUTION_CONTRACT = FIXED_CONTRIBUTION_CONTRACT;
@@ -1764,6 +1769,40 @@ function getErrorMessage(error) {
   if (typeof error === "string") return error;
   const msg = error.shortMessage || error.reason || error.message;
   return msg || JSON.stringify(error) || t("unknownError");
+}
+
+function createRequestTimeoutError(method, timeoutMs) {
+  const error = new Error(`${method} timeout (${timeoutMs}ms)`);
+  error.code = "REQUEST_TIMEOUT";
+  error.method = method;
+  return error;
+}
+
+async function requestAccountsWithTimeout(timeoutMs = CONNECT_REQUEST_TIMEOUT_MS) {
+  if (!provider || typeof provider.request !== "function") {
+    throw new Error("Wallet provider is not available.");
+  }
+  if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) {
+    return provider.request({ method: "eth_requestAccounts" });
+  }
+
+  let timeoutId = null;
+  const timeoutPromise = new Promise((_, reject) => {
+    timeoutId = setTimeout(() => {
+      reject(createRequestTimeoutError("eth_requestAccounts", timeoutMs));
+    }, timeoutMs);
+  });
+
+  try {
+    return await Promise.race([
+      provider.request({ method: "eth_requestAccounts" }),
+      timeoutPromise
+    ]);
+  } finally {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+  }
 }
 
 function hasEthersSdk() {
@@ -2356,7 +2395,7 @@ async function connectWallet() {
     if (!ok) return;
 
     bindProviderEvents();
-    await provider.request({ method: "eth_requestAccounts" });
+    await requestAccountsWithTimeout();
     if (REQUIRED_NETWORK) {
       const switched = await ensureRequiredNetwork();
       if (!switched) {
@@ -2364,18 +2403,30 @@ async function connectWallet() {
       }
     }
     await syncAccountAndChain();
+    if (!currentAccount) {
+      logT("logNoAccountAfterConnect");
+      return;
+    }
     logT("logWalletConnectedSuccess", { provider: providerName });
   } catch (error) {
     if (error && error.code === 4001) {
       logT("logConnectCanceled");
+      await syncAccountAndChain().catch(() => {});
       return;
     }
     if (error && error.code === -32002) {
       logT("logConnectPending");
+      await syncAccountAndChain().catch(() => {});
+      return;
+    }
+    if (error && error.code === "REQUEST_TIMEOUT" && error.method === "eth_requestAccounts") {
+      logT("logConnectTimeout");
+      await syncAccountAndChain().catch(() => {});
       return;
     }
     const codeSuffix = error && error.code ? ` (code ${error.code})` : "";
     logT("logConnectFailed", { codeSuffix, message: getErrorMessage(error) });
+    await syncAccountAndChain().catch(() => {});
   } finally {
     setButtonBusy(connectBtn, false);
   }

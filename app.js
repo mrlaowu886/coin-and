@@ -55,6 +55,8 @@ const I18N = {
     providerDebugTemplate: "window.ethereum={ethereum} | 注入={injected} | eip6963={eip6963}",
     optionNetwork: "{label} ({chainId})",
     logProviderSelected: "已选择钱包提供者：{provider}{extra}",
+    logProviderSelectedSingle: "已选择钱包提供者：{provider}",
+    logProviderSelectedMulti: "已选择钱包提供者：{provider}（检测到 {count} 个钱包）",
     logProviderCountSuffix: "（检测到 {count} 个钱包）",
     logNoProviderFound: "未通过 window.ethereum 或 EIP-6963 发现钱包。",
     logCandidates: "候选钱包：{candidates}",
@@ -88,6 +90,7 @@ const I18N = {
     logContractSaved: "贡献值合约地址已保存：{address}",
     logContractCleared: "已清空贡献值合约地址。",
     logContractInvalid: "合约地址无效，请输入正确的 0x 地址。",
+    logContractFromUrlPending: "检测到链接中的合约地址（{address}），已预填但未启用。请点击“保存合约地址”确认后生效。",
     logContractMissing: "请先填写并保存贡献值合约地址。",
     logEthersMissing: "未加载 ethers.js，无法调用合约。",
     logNeedWalletBeforeClaim: "请先连接钱包后再领取贡献值。",
@@ -159,6 +162,8 @@ const I18N = {
     providerDebugTemplate: "window.ethereum={ethereum} | injected={injected} | eip6963={eip6963}",
     optionNetwork: "{label} ({chainId})",
     logProviderSelected: "Provider selected: {provider}{extra}",
+    logProviderSelectedSingle: "Provider selected: {provider}",
+    logProviderSelectedMulti: "Provider selected: {provider} ({count} wallets found)",
     logProviderCountSuffix: " ({count} wallets found)",
     logNoProviderFound: "No provider found from window.ethereum or EIP-6963.",
     logCandidates: "Candidates: {candidates}",
@@ -192,6 +197,7 @@ const I18N = {
     logContractSaved: "Contribution contract saved: {address}",
     logContractCleared: "Contribution contract cleared.",
     logContractInvalid: "Invalid contract address. Please input a valid 0x address.",
+    logContractFromUrlPending: "Contract address detected in URL ({address}). It is prefilled but not active until you click Save Contract.",
     logContractMissing: "Please set and save the contribution contract address first.",
     logEthersMissing: "ethers.js is not loaded. Contract calls are unavailable.",
     logNeedWalletBeforeClaim: "Connect wallet before claiming.",
@@ -803,7 +809,7 @@ const providerDebugValue = document.getElementById("providerDebugValue");
 const logBox = document.getElementById("logBox");
 const toastBox = document.getElementById("toast");
 
-const logLines = [];
+const logEntries = [];
 let toastTimer = null;
 
 let currentLangPref = "auto";
@@ -942,7 +948,8 @@ function renderNetworkSelect() {
 }
 
 function refreshStatusText() {
-  const text = t(lastStatus.key, lastStatus.vars);
+  const vars = resolveI18nVars(lastStatus.vars);
+  const text = t(lastStatus.key, vars);
   walletStatus.innerHTML = `<span class="dot ${lastStatus.connected ? "ok" : "warn"}"></span>${text}`;
 }
 
@@ -1003,9 +1010,8 @@ function applyLanguage() {
   refreshStatusText();
   updateActionState();
   updateProviderDebug();
-  if (!logLines.length) {
-    logBox.textContent = t("ready");
-  }
+  chainValue.textContent = getChainDisplayText(currentChainId);
+  renderLogBox();
 }
 
 function setLanguagePreference(pref, persist = true) {
@@ -1022,22 +1028,50 @@ function setLanguagePreference(pref, persist = true) {
   applyLanguage();
 }
 
-function log(message) {
-  const stamp = new Date().toLocaleTimeString();
-  logLines.unshift(`[${stamp}] ${message}`);
-  if (logLines.length > MAX_LOG_LINES) {
-    logLines.length = MAX_LOG_LINES;
+function renderLogBox() {
+  if (!logEntries.length) {
+    logBox.textContent = t("ready");
+    return;
   }
-  logBox.textContent = logLines.join("\n");
+  logBox.textContent = logEntries
+    .map((entry) => {
+      const vars = resolveI18nVars(entry.vars || {});
+      const message = entry.kind === "i18n"
+        ? t(entry.key, vars)
+        : String(entry.message || "");
+      return `[${entry.stamp}] ${message}`;
+    })
+    .join("\n");
+}
+
+function appendLogEntry(entry) {
+  logEntries.unshift(entry);
+  if (logEntries.length > MAX_LOG_LINES) {
+    logEntries.length = MAX_LOG_LINES;
+  }
+  renderLogBox();
+}
+
+function log(message) {
+  appendLogEntry({
+    stamp: new Date().toLocaleTimeString(),
+    kind: "text",
+    message
+  });
 }
 
 function logT(key, vars = {}) {
-  log(t(key, vars));
+  appendLogEntry({
+    stamp: new Date().toLocaleTimeString(),
+    kind: "i18n",
+    key,
+    vars
+  });
 }
 
 function clearLog() {
-  logLines.length = 0;
-  logBox.textContent = t("ready");
+  logEntries.length = 0;
+  renderLogBox();
 }
 
 function showToast(message) {
@@ -1066,6 +1100,29 @@ function formatNative(weiHex, symbol = "BNB") {
   const fraction = wei % base;
   const fractionStr = fraction.toString().padStart(18, "0").slice(0, 5).replace(/0+$/, "");
   return fractionStr ? `${whole.toString()}.${fractionStr} ${symbol}` : `${whole.toString()} ${symbol}`;
+}
+
+function getChainDisplayText(chainId) {
+  if (!chainId) return "-";
+  const network = findNetwork(chainId);
+  return network
+    ? `${getNetworkLabel(network)} (${chainId})`
+    : t("unknownChain", { chainId });
+}
+
+function findNetworkByKey(networkKey) {
+  if (!networkKey) return null;
+  return NETWORKS.find((item) => item.key === networkKey) || null;
+}
+
+function resolveI18nVars(vars = {}) {
+  if (!vars || typeof vars !== "object") return {};
+  const out = { ...vars };
+  if (!out.network && out.networkKey) {
+    const network = findNetworkByKey(out.networkKey);
+    out.network = network ? getNetworkLabel(network) : String(out.networkKey);
+  }
+  return out;
 }
 
 function findNetwork(chainId) {
@@ -1220,7 +1277,7 @@ function parseContractFromUrl() {
 function buildInviteLink(address) {
   const normalized = normalizeAddress(address);
   if (!normalized || !window.location) return "";
-  const url = new URL(window.location.href);
+  const url = new URL(window.location.origin + window.location.pathname);
   url.searchParams.set("ref", normalized);
   return url.toString();
 }
@@ -1597,8 +1654,11 @@ async function detectProvider(showNotFoundLog = true) {
     provider = picked.chosen;
     providerName = picked.chosenEntry.name || getProviderName(provider);
     const total = picked.candidates.length;
-    const extra = total > 1 ? t("logProviderCountSuffix", { count: total }) : "";
-    logT("logProviderSelected", { provider: providerName, extra });
+    if (total > 1) {
+      logT("logProviderSelectedMulti", { provider: providerName, count: total });
+    } else {
+      logT("logProviderSelectedSingle", { provider: providerName });
+    }
     return true;
   }
 
@@ -1633,7 +1693,7 @@ async function switchToNetwork(target) {
       method: "wallet_switchEthereumChain",
       params: [{ chainId: target.chainId }]
     });
-    logT("logSwitchedNetwork", { network: getNetworkLabel(target) });
+    logT("logSwitchedNetwork", { networkKey: target.key });
     return true;
   } catch (switchError) {
     const code = switchError && switchError.code;
@@ -1643,7 +1703,7 @@ async function switchToNetwork(target) {
           method: "wallet_addEthereumChain",
           params: [target.params]
         });
-        logT("logAddedAndSwitched", { network: getNetworkLabel(target) });
+        logT("logAddedAndSwitched", { networkKey: target.key });
         return true;
       } catch (addError) {
         logT("logAddNetworkFailed", { message: getErrorMessage(addError) });
@@ -1672,7 +1732,7 @@ async function syncAccountAndChain() {
 
   if (currentAccount) {
     if (REQUIRED_NETWORK && currentChainId.toLowerCase() !== REQUIRED_NETWORK.chainId.toLowerCase()) {
-      setStatusByKey("statusWrongNetwork", false, { network: getNetworkLabel(REQUIRED_NETWORK) });
+      setStatusByKey("statusWrongNetwork", false, { networkKey: REQUIRED_NETWORK.key });
     } else {
       setStatusByKey("statusConnected", true, { provider: providerName });
     }
@@ -1681,12 +1741,9 @@ async function syncAccountAndChain() {
   }
 
   const network = findNetwork(currentChainId);
-  const chainText = network
-    ? `${getNetworkLabel(network)} (${currentChainId})`
-    : t("unknownChain", { chainId: currentChainId || "-" });
 
   addressValue.textContent = currentAccount ? `${shortenAddress(currentAccount)} (${currentAccount})` : "-";
-  chainValue.textContent = chainText;
+  chainValue.textContent = getChainDisplayText(currentChainId);
   selectNetworkByChainId(currentChainId);
 
   if (currentAccount) {
@@ -1715,7 +1772,7 @@ async function connectWallet() {
     if (REQUIRED_NETWORK) {
       const switched = await ensureRequiredNetwork();
       if (!switched) {
-        logT("logSwitchToRequiredFailed", { network: getNetworkLabel(REQUIRED_NETWORK) });
+        logT("logSwitchToRequiredFailed", { networkKey: REQUIRED_NETWORK.key });
       }
     }
     await syncAccountAndChain();
@@ -1746,7 +1803,7 @@ async function switchOrAddNetwork() {
   const target = REQUIRED_NETWORK || ACTIVE_NETWORKS[index];
   if (!target) return;
   if (currentChainId && currentChainId.toLowerCase() === target.chainId.toLowerCase()) {
-    logT("logAlreadyOnNetwork", { network: getNetworkLabel(target) });
+    logT("logAlreadyOnNetwork", { networkKey: target.key });
     return;
   }
 
@@ -1784,10 +1841,7 @@ function bindProviderEvents() {
 
 async function init() {
   const contractFromUrl = parseContractFromUrl();
-  contributionContractAddress = contractFromUrl || loadContributionContractAddress();
-  if (contractFromUrl) {
-    persistContributionContractAddress(contractFromUrl);
-  }
+  contributionContractAddress = loadContributionContractAddress();
   pendingReferrer = parseReferrerFromUrl();
   currentLangPref = loadLanguagePreference();
   currentLang = currentLangPref === "auto" ? detectSystemLang() : currentLangPref;
@@ -1795,6 +1849,14 @@ async function init() {
   clearLog();
   if (contributionContractAddress) {
     contractAddressInput.value = contributionContractAddress;
+  } else if (contractFromUrl) {
+    contractAddressInput.value = contractFromUrl;
+    logT("logContractFromUrlPending", { address: contractFromUrl });
+  } else {
+    contractAddressInput.value = "";
+  }
+  if (contributionContractAddress && contractFromUrl && contributionContractAddress.toLowerCase() !== contractFromUrl.toLowerCase()) {
+    logT("logContractFromUrlPending", { address: contractFromUrl });
   }
   if (pendingReferrer) {
     logT("logInviteRefDetected", { referrer: pendingReferrer });

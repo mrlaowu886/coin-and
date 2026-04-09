@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BNB Chain Token Lookup Dashboard</title>
+    <meta
+      id="meta-description"
+      name="description"
+      content="Enter a BscScan link or BNB Chain token contract address to view live price, liquidity, FDV, on-chain supply, and 24H activity."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;800&family=Noto+Sans+Arabic:wght@400;500;700&family=Noto+Sans+Devanagari:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700;800&family=Noto+Sans+TC:wght@400;500;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.5/ethers.umd.min.js"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script defer src="./locales.js"></script>
+    <script defer src="./locales-complete.js"></script>
+    <script type="module" src="./src/main.js"></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <div class="ambient ambient-a"></div>
+      <div class="ambient ambient-b"></div>
+      <div class="ambient ambient-c"></div>
+
+      <header class="topbar">
+        <div>
+          <p class="eyebrow" data-i18n="hero.eyebrow">BNB Chain / Token Lookup Dashboard</p>
+          <h1 data-i18n="hero.title">BNB Chain Token Lookup Dashboard</h1>
+        </div>
+        <div class="topbar-actions">
+          <div class="language-picker" id="language-picker">
+            <span class="sr-only" id="language-picker-label" data-i18n="language.label">Language</span>
+            <button
+              class="language-trigger"
+              id="language-trigger"
+              type="button"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-labelledby="language-picker-label language-trigger-label"
+            >
+              <span id="language-trigger-label">English</span>
+            </button>
+            <div class="language-menu hidden" id="language-menu" role="listbox" aria-labelledby="language-picker-label"></div>
+          </div>
+        </div>
+      </header>
+
+      <main class="dashboard">
+        <section class="panel search-panel">
+          <form class="search-form" id="search-form">
+            <label class="search-label sr-only" for="search-input" data-i18n="search.label">Search</label>
+            <div class="search-row">
+              <input
+                class="search-input"
+                id="search-input"
+                type="text"
+                autocomplete="off"
+                placeholder="Enter a token contract address or BscScan link"
+                data-i18n-placeholder="search.placeholder"
+              />
+            </div>
+            <div class="search-actions">
+              <button class="ghost-button" id="search-button" type="submit" data-i18n="search.button">Look Up Token</button>
+            </div>
+          </form>
+
+          <p class="search-hint hidden" id="search-hint"></p>
+        </section>
+
+        <div class="results-shell hidden" id="results-shell">
+          <section class="panel summary-bar">
+            <div class="summary-top">
+              <div class="summary-main">
+                <p class="eyebrow" data-i18n="summary.eyebrow">Result Snapshot</p>
+                <h2 id="summary-title">--</h2>
+                <p class="summary-subtitle" id="summary-subtitle" data-i18n="summary.waiting">Waiting for lookup</p>
+              </div>
+
+              <div class="summary-actions-group">
+                <button class="ghost-button" id="summary-search-button" type="button" data-i18n="summary.searchAgain">Search Again</button>
+                <button class="ghost-button" id="summary-refresh-button" type="button" data-i18n="summary.refresh">Refresh</button>
+                <button class="ghost-button" id="copy-address" type="button" data-i18n="summary.copyAddress">Copy Address</button>
+              </div>
+            </div>
+
+            <div class="summary-stats">
+              <article class="summary-stat">
+                <span data-i18n="market.price">Price</span>
+                <strong id="summary-price">--</strong>
+              </article>
+              <article class="summary-stat">
+                <span data-i18n="market.change24h">24H Change</span>
+                <strong id="summary-change">--</strong>
+              </article>
+              <article class="summary-stat">
+                <span data-i18n="market.liquidity">Liquidity</span>
+                <strong id="summary-liquidity">--</strong>
+              </article>
+              <article class="summary-stat">
+                <span data-i18n="market.marketCapFdv">Market Cap / FDV</span>
+                <strong id="summary-marketcap">--</strong>
+              </article>
+            </div>
+
+            <div class="summary-links">
+              <a class="action-link" id="token-address-link" href="#" target="_blank" rel="noreferrer">
+                Contract: --
+              </a>
+              <a class="action-link" id="bsc-link" href="#" target="_blank" rel="noreferrer">
+                <span data-i18n="summary.openBscScan">Open BscScan</span>
+              </a>
+              <a class="action-link" id="pair-link" href="#" target="_blank" rel="noreferrer">
+                <span data-i18n="summary.openPair">View Main Pair</span>
+              </a>
+              <a class="action-link" id="dex-link" href="#" target="_blank" rel="noreferrer">
+                <span data-i18n="summary.openDex">Open DexScreener</span>
+              </a>
+            </div>
+
+            <nav class="section-nav">
+              <a class="nav-pill" href="#overview-section" data-i18n="nav.overview">Overview</a>
+              <a class="nav-pill" href="#market-section" data-i18n="nav.market">Market</a>
+              <a class="nav-pill" href="#contract-section" data-i18n="nav.contract">Contract</a>
+              <a class="nav-pill hidden" id="advanced-nav-link" href="#advanced-section" data-i18n="nav.advanced">Advanced</a>
+              <a class="nav-pill" href="#risk-section" data-i18n="nav.risk">Risk</a>
+            </nav>
+          </section>
+
+          <section class="section-stack" id="overview-section">
+            <div class="section-banner">
+              <div>
+                <p class="eyebrow" data-i18n="section.overviewEyebrow">Overview</p>
+                <h3 data-i18n="nav.overview">Overview</h3>
+              </div>
+              <span class="section-note" id="overview-note" data-i18n="overview.waiting">Waiting for on-chain data</span>
+            </div>
+
+            <div class="result-columns">
+              <article class="panel">
+                <div class="section-head">
+                  <div>
+                    <p class="eyebrow" data-i18n="overview.tokenStateEyebrow">Token State</p>
+                    <h3 data-i18n="overview.tokenStateTitle">Supply & Core Stats</h3>
+                  </div>
+                </div>
+                <div class="stat-grid" id="overview-grid"></div>
+              </article>
+
+              <article class="panel">
+                <div class="section-head">
+                  <div>
+                    <p class="eyebrow" data-i18n="overview.poolSnapshotEyebrow">Pool Snapshot</p>
+                    <h3 data-i18n="overview.poolSnapshotTitle">Pool & Addresses</h3>
+                  </div>
+                </div>
+                <div class="stat-grid" id="pool-grid"></div>
+                <div class="address-grid" id="address-list"></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="section-stack" id="market-section">
+            <div class="section-banner">
+              <div>
+                <p class="eyebrow" data-i18n="section.marketEyebrow">Market</p>
+                <h3 data-i18n="nav.market">Market</h3>
+              </div>
+              <span class="section-note" id="market-note" data-i18n="market.waiting">Waiting for market data</span>
+            </div>
+
+            <div class="metric-grid metric-grid-market" id="market-metric-grid"></div>
+
+            <div class="chart-grid" id="market-chart-grid">
+              <article class="panel chart-panel">
+                <div class="section-head">
+                  <div>
+                    <p class="eyebrow" data-i18n="market.priceMomentumEyebrow">Price Momentum</p>
+                    <h3 data-i18n="market.priceMomentumTitle">Price Momentum</h3>
+                  </div>
+                  <span class="section-note" id="price-chart-meta" data-i18n="market.waiting">Waiting for market data</span>
+                </div>
+                <div class="chart-canvas" id="price-chart"></div>
+                <div class="chart-legend" id="price-chart-legend"></div>
+              </article>
+
+              <article class="panel chart-panel">
+                <div class="section-head">
+                  <div>
+                    <p class="eyebrow" data-i18n="market.marketStrengthEyebrow">Market Strength</p>
+                    <h3 data-i18n="market.marketStrengthTitle">24H Activity Bars</h3>
+                  </div>
+                  <span class="section-note" id="activity-chart-meta" data-i18n="market.waiting">Waiting for market data</span>
+                </div>
+                <div class="activity-bars" id="activity-chart"></div>
+              </article>
+            </div>
+
+            <article class="panel market-detail-panel" id="market-detail-panel">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow" data-i18n="market.shortTermEyebrow">Short-Term Moves</p>
+                  <h3 data-i18n="market.shortTermTitle">Short-Term Moves & Buy/Sell Split</h3>
+                </div>
+                <span class="section-note" data-i18n="market.shortTermNote">Based on discrete DexScreener price moves and transaction counts</span>
+              </div>
+
+              <div class="change-strip" id="market-pills"></div>
+
+              <div class="bar-stack">
+                <div class="bar-block">
+                  <div class="bar-head">
+                    <span data-i18n="market.buySellSplit">24H Buy/Sell Split</span>
+                    <strong id="buy-sell-caption">--</strong>
+                  </div>
+                  <div class="split-bar">
+                    <div class="split-fill buy" id="buy-bar"></div>
+                    <div class="split-fill sell" id="sell-bar"></div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <div class="empty-state hidden" id="market-empty">
+              <span data-i18n="market.empty">No public BNB Chain trading pair has been found yet. The market panel will expand automatically once a main pair is available.</span>
+            </div>
+          </section>
+
+          <section class="section-stack" id="contract-section">
+            <div class="section-banner">
+              <div>
+                <p class="eyebrow" data-i18n="section.contractEyebrow">Contract</p>
+                <h3 data-i18n="nav.contract">Contract</h3>
+              </div>
+              <span class="section-note" data-i18n="contract.note">Public fields and data sources</span>
+            </div>
+
+            <div class="result-columns">
+              <article class="panel">
+                <div class="section-head">
+                  <div>
+                    <p class="eyebrow" data-i18n="contract.fieldsEyebrow">Contract Fields</p>
+                    <h3 data-i18n="contract.fieldsTitle">Public Fields</h3>
+                  </div>
+                </div>
+                <div class="stat-grid" id="contract-grid"></div>
+                <p class="empty-state hidden" id="contract-empty"></p>
+              </article>
+
+              <article class="panel">
+                <div class="section-head">
+                  <div>
+                    <p class="eyebrow" data-i18n="contract.sourcesEyebrow">Sources</p>
+                    <h3 data-i18n="contract.sourcesTitle">Data Sources</h3>
+                  </div>
+                </div>
+                <div class="source-list" id="source-list"></div>
+                <p class="source-note" id="source-note"></p>
+              </article>
+            </div>
+          </section>
+
+          <section class="section-stack hidden" id="advanced-section">
+            <div class="section-banner">
+              <div>
+                <p class="eyebrow" data-i18n="section.advancedEyebrow">Advanced</p>
+                <h3 data-i18n="nav.advanced">Advanced</h3>
+              </div>
+              <span class="section-note" id="advanced-note" data-i18n="advanced.waiting">Waiting for advanced protocol fields</span>
+            </div>
+
+            <div class="result-columns">
+              <article class="panel">
+                <div class="section-head">
+                  <div>
+                    <p class="eyebrow" data-i18n="advanced.protocolEyebrow">Protocol Snapshot</p>
+                    <h3 data-i18n="advanced.protocolTitle">Advanced Protocol Snapshot</h3>
+                  </div>
+                </div>
+                <div class="stat-grid" id="advanced-grid"></div>
+              </article>
+
+              <article class="panel">
+                <div class="section-head">
+                  <div>
+                    <p class="eyebrow" data-i18n="advanced.mechanicsEyebrow">Mechanics</p>
+                    <h3 data-i18n="advanced.mechanicsTitle">Mechanics & Thresholds</h3>
+                  </div>
+                </div>
+                <div class="stat-grid" id="advanced-mechanics"></div>
+              </article>
+            </div>
+
+            <article class="panel hidden" id="advanced-address-panel">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow" data-i18n="advanced.addressEyebrow">Address Analyzer</p>
+                  <h3 data-i18n="advanced.addressTitle">Address Reward Analyzer</h3>
+                </div>
+                <span class="section-note" id="advanced-address-note" data-i18n="advanced.addressPrompt">Enter a wallet address to read public protocol-side reward fields.</span>
+              </div>
+
+              <form class="advanced-address-form" id="advanced-address-form">
+                <input
+                  class="advanced-address-input"
+                  id="advanced-address-input"
+                  type="text"
+                  autocomplete="off"
+                  placeholder="Paste a wallet address for reward analysis"
+                  data-i18n-placeholder="advanced.addressPlaceholder"
+                />
+                <button class="ghost-button" id="advanced-address-button" type="submit" data-i18n="advanced.addressButton">Analyze Address</button>
+              </form>
+
+              <div class="stat-grid hidden" id="advanced-address-grid"></div>
+            </article>
+          </section>
+
+          <section class="section-stack" id="risk-section">
+            <div class="section-banner">
+              <div>
+                <p class="eyebrow" data-i18n="section.riskEyebrow">Risk</p>
+                <h3 data-i18n="risk.title">Risk & Conclusions</h3>
+              </div>
+              <span class="section-note" id="risk-summary-note" data-i18n="risk.waiting">Waiting for risk analysis</span>
+            </div>
+
+            <div class="risk-grid" id="risk-grid"></div>
+            <div class="insight-list" id="insight-list"></div>
+          </section>
+        </div>
+      </main>
+
+      <a
+        class="social-float"
+        href="https://x.com/CoinAnd_Labs"
+        target="_blank"
+        rel="noreferrer noopener"
+        aria-label="CoinAnd Labs on X"
+        title="CoinAnd Labs on X"
+      >
+        <img class="social-float-logo" src="./assets/x-logo.svg" alt="" />
+        <span class="social-float-text">@CoinAnd_Labs</span>
+      </a>
+    </div>
+  </body>
+</html>

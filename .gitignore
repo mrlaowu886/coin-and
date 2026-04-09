@@ -1,0 +1,25 @@
+# Browser profiles and local checks
+.chrome-check*/
+.chrome-dev-profile/
+.edge-profile*/
+
+# Local debug artifacts
+check-*.html
+check-*.png
+*-check*.png
+*-check*.html
+debug-*.html
+debug-*.png
+advanced-check*.png
+advanced-check*.html
+chrome-dom.html
+dom-check.html
+bsc-code-page.html
+bsc-token-page.html
+
+# Logs
+*.log
+
+# Local backups
+*.bak
+*.bak-*

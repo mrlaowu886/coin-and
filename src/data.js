@@ -16,6 +16,7 @@ const {
   RPC_ENDPOINTS,
   ERC20_ABI,
   OPTIONAL_ABI,
+  RETURN_QUEUE_ABI,
   I18N_CONFIG,
   DEFAULT_LANGUAGE_PREFERENCE,
   RTL_LOCALES,
@@ -90,6 +91,7 @@ const {
   resolveCapMetrics,
   daysSince,
   getProvider,
+  readOptional,
   readOptionalMap,
   fetchJson,
   extractTokenAddress
@@ -99,6 +101,8 @@ const CHAIN_CACHE_TTL_MS = 5 * 60 * 1000;
 const MARKET_CACHE_TTL_MS = 30 * 1000;
 const ADDRESS_CACHE_TTL_MS = 30 * 1000;
 const INDEX_SCALE = 1000000000000000000n;
+const RETURN_QUEUE_SCAN_LIMIT = 240;
+const RETURN_QUEUE_SCAN_BATCH = 24;
 const chainCache = new Map();
 const marketCache = new Map();
 const addressCache = new Map();
@@ -137,6 +141,153 @@ function deriveIndexReward(positionRaw, globalIndexRaw, userIndexRaw) {
   return (position * (globalIndex - userIndex)) / INDEX_SCALE;
 }
 
+async function readReturnQueueSnapshot(tokenAddress, tokenContract, poolAddress, provider) {
+  const normalizedPoolAddress = normalizeAddressValue(poolAddress);
+  if (!normalizedPoolAddress) {
+    return null;
+  }
+
+  const queueContract = new ethers.Contract(normalizedPoolAddress, RETURN_QUEUE_ABI, provider);
+  const baseRaw = await readOptionalMap(queueContract, [
+    "token",
+    "queueLen",
+    "currentIdx",
+    "MAX_LOOP",
+    ["amountBefore", [ZERO_ADDRESS]],
+  ]);
+  const balanceRawMap = await readOptionalMap(tokenContract, [["balanceOf", [normalizedPoolAddress]]]);
+
+  const queueLenRaw = toBigIntValue(baseRaw.queueLen);
+  const currentIdxRaw = toBigIntValue(baseRaw.currentIdx);
+  const maxLoopRaw = toBigIntValue(baseRaw.MAX_LOOP);
+  const totalPendingRaw = toBigIntValue(baseRaw.amountBefore);
+  const poolBalanceRaw = toBigIntValue(balanceRawMap.balanceOf);
+  const queueToken = normalizeAddressValue(baseRaw.token);
+
+  let headAmountRaw = null;
+  let headClaimedRaw = null;
+  let headRemainingRaw = null;
+  let headAddress = null;
+
+  if (queueLenRaw !== null && currentIdxRaw !== null && currentIdxRaw >= 0n && currentIdxRaw < queueLenRaw) {
+    const headRaw = await readOptionalMap(queueContract, [
+      ["amountQueue", [currentIdxRaw]],
+      ["claimedQueue", [currentIdxRaw]],
+      ["addressQueue", [currentIdxRaw]],
+    ]);
+
+    headAmountRaw = toBigIntValue(headRaw.amountQueue);
+    headClaimedRaw = toBigIntValue(headRaw.claimedQueue);
+    headAddress = normalizeAddressValue(headRaw.addressQueue);
+    if (headAmountRaw !== null) {
+      headRemainingRaw = headAmountRaw - (headClaimedRaw || 0n);
+      if (headRemainingRaw < 0n) {
+        headRemainingRaw = 0n;
+      }
+    }
+  }
+
+  const remainingEntriesRaw =
+    queueLenRaw !== null && currentIdxRaw !== null && queueLenRaw >= currentIdxRaw ? queueLenRaw - currentIdxRaw : null;
+  const coveragePercent =
+    totalPendingRaw !== null && totalPendingRaw > 0n && poolBalanceRaw !== null
+      ? Number((poolBalanceRaw * 10000n) / totalPendingRaw) / 100
+      : NaN;
+  const normalizedTokenAddress = normalizeAddressValue(tokenAddress);
+  const supportsQueue =
+    queueLenRaw !== null ||
+    currentIdxRaw !== null ||
+    totalPendingRaw !== null ||
+    headAmountRaw !== null ||
+    headAddress !== null;
+
+  if (!supportsQueue) {
+    return null;
+  }
+
+  return {
+    supported: true,
+    address: normalizedPoolAddress,
+    queueToken,
+    queueMatchesToken: !queueToken || !normalizedTokenAddress ? true : queueToken === normalizedTokenAddress,
+    queueLenRaw,
+    currentIdxRaw,
+    remainingEntriesRaw,
+    totalPendingRaw,
+    poolBalanceRaw,
+    coveragePercent,
+    maxLoopRaw,
+    headAmountRaw,
+    headClaimedRaw,
+    headRemainingRaw,
+    headAddress,
+  };
+}
+
+async function scanReturnQueueAheadMetrics(queueAddress, userAddress, returnQueueMeta, provider) {
+  const currentIdxRaw = toBigIntValue(returnQueueMeta?.currentIdxRaw);
+  const queueLenRaw = toBigIntValue(returnQueueMeta?.queueLenRaw);
+  const normalizedUserAddress = normalizeAddressValue(userAddress);
+
+  if (!queueAddress || !normalizedUserAddress || currentIdxRaw === null || queueLenRaw === null || currentIdxRaw >= queueLenRaw) {
+    return null;
+  }
+
+  const remainingEntriesRaw = queueLenRaw - currentIdxRaw;
+  if (remainingEntriesRaw <= 0n) {
+    return {
+      found: false,
+      truncated: false,
+      scannedEntriesCount: 0,
+      uniqueAddressesAheadCount: 0,
+      entryCountAhead: 0,
+    };
+  }
+
+  const scanLimit = Math.min(Number(remainingEntriesRaw), RETURN_QUEUE_SCAN_LIMIT);
+  const queueContract = new ethers.Contract(queueAddress, RETURN_QUEUE_ABI, provider);
+  const aheadAddresses = new Set();
+  let found = false;
+  let entryCountAhead = 0;
+  let scannedEntriesCount = 0;
+
+  for (let offset = 0; offset < scanLimit && !found; offset += RETURN_QUEUE_SCAN_BATCH) {
+    const batchSize = Math.min(RETURN_QUEUE_SCAN_BATCH, scanLimit - offset);
+    const calls = [];
+
+    for (let index = 0; index < batchSize; index += 1) {
+      calls.push(readOptional(queueContract, "addressQueue", [currentIdxRaw + BigInt(offset + index)]));
+    }
+
+    const addresses = await Promise.all(calls);
+    for (const rawAddress of addresses) {
+      const candidate = normalizeAddressValue(rawAddress);
+      if (!candidate) {
+        scannedEntriesCount += 1;
+        entryCountAhead += 1;
+        continue;
+      }
+
+      if (candidate === normalizedUserAddress) {
+        found = true;
+        break;
+      }
+
+      aheadAddresses.add(candidate);
+      scannedEntriesCount += 1;
+      entryCountAhead += 1;
+    }
+  }
+
+  return {
+    found,
+    truncated: !found && scanLimit < Number(remainingEntriesRaw),
+    scannedEntriesCount,
+    uniqueAddressesAheadCount: aheadAddresses.size,
+    entryCountAhead,
+  };
+}
+
 async function readProtocolAddressSnapshotFresh(tokenAddress, userAddress, profile) {
   const { provider } = await getProvider();
   const contract = new ethers.Contract(tokenAddress, [...ERC20_ABI, ...OPTIONAL_ABI], provider);
@@ -166,6 +317,56 @@ async function readProtocolAddressSnapshotFresh(tokenAddress, userAddress, profi
   const lpPendingEstimateRaw = deriveIndexReward(lpBalanceRaw, globalIndexRaw, raw.userIndex);
   const nodePendingEstimateRaw = deriveIndexReward(nodeCountRaw, globalNodeIndexRaw, raw.userNodeIndex);
   const referrer = normalizeAddressValue(raw.referee);
+  const returnQueue = profile?.returnQueue;
+  let returnQueueAheadRaw = null;
+  let returnQueueActive = false;
+  let returnQueueIsHead = false;
+  let returnQueueGapRaw = null;
+  let returnQueueAheadAddressCount = null;
+  let returnQueueAheadEntryCount = null;
+  let returnQueueScanTruncated = false;
+  let returnQueueScanFound = false;
+  let returnQueueScannedEntriesCount = 0;
+
+  if (returnQueue?.supported && returnQueue.address) {
+    const queueContract = new ethers.Contract(returnQueue.address, RETURN_QUEUE_ABI, provider);
+    const queueRaw = await readOptionalMap(queueContract, [["amountBefore", [userAddress]]]);
+    returnQueueAheadRaw = toBigIntValue(queueRaw.amountBefore);
+
+    const totalPendingRaw = toBigIntValue(returnQueue.totalPendingRaw);
+    const poolBalanceRaw = toBigIntValue(returnQueue.poolBalanceRaw);
+    const headAddress = normalizeAddressValue(returnQueue.headAddress);
+    const normalizedUserAddress = normalizeAddressValue(userAddress);
+
+    if (
+      normalizedUserAddress &&
+      totalPendingRaw !== null &&
+      totalPendingRaw > 0n &&
+      returnQueueAheadRaw !== null
+    ) {
+      returnQueueIsHead = Boolean(headAddress && headAddress === normalizedUserAddress);
+      returnQueueActive = returnQueueIsHead || returnQueueAheadRaw < totalPendingRaw;
+
+      if (returnQueueActive && poolBalanceRaw !== null) {
+        returnQueueGapRaw = returnQueueAheadRaw > poolBalanceRaw ? returnQueueAheadRaw - poolBalanceRaw : 0n;
+      }
+    }
+
+    if (returnQueueIsHead) {
+      returnQueueAheadAddressCount = 0;
+      returnQueueAheadEntryCount = 0;
+      returnQueueScanFound = true;
+    } else if (returnQueueActive) {
+      const aheadMetrics = await scanReturnQueueAheadMetrics(returnQueue.address, userAddress, returnQueue, provider);
+      if (aheadMetrics) {
+        returnQueueAheadAddressCount = aheadMetrics.uniqueAddressesAheadCount;
+        returnQueueAheadEntryCount = aheadMetrics.entryCountAhead;
+        returnQueueScanTruncated = aheadMetrics.truncated;
+        returnQueueScanFound = aheadMetrics.found;
+        returnQueueScannedEntriesCount = aheadMetrics.scannedEntriesCount;
+      }
+    }
+  }
 
   const availableFields = [
     totalPendingRaw !== null && totalPendingRaw >= 0n ? "pending" : "",
@@ -177,6 +378,7 @@ async function readProtocolAddressSnapshotFresh(tokenAddress, userAddress, profi
     referrer ? "referrer" : "",
     lpPendingEstimateRaw !== null ? "lpPending" : "",
     nodePendingEstimateRaw !== null ? "nodePending" : "",
+    returnQueueAheadRaw !== null ? "returnQueue" : "",
   ].filter(Boolean);
 
   return {
@@ -193,6 +395,15 @@ async function readProtocolAddressSnapshotFresh(tokenAddress, userAddress, profi
     lpPendingEstimateRaw,
     nodePendingEstimateRaw,
     referrer,
+    returnQueueAheadRaw,
+    returnQueueActive,
+    returnQueueIsHead,
+    returnQueueGapRaw,
+    returnQueueAheadAddressCount,
+    returnQueueAheadEntryCount,
+    returnQueueScanTruncated,
+    returnQueueScanFound,
+    returnQueueScannedEntriesCount,
     lastTotalLpRaw,
     checkedAt: new Date(),
   };
@@ -263,6 +474,7 @@ async function readTokenProfileFresh(address) {
     "lastUpdate",
   ];
   const optionalValues = await readOptionalMap(contract, optionalMethods);
+  const returnQueue = await readReturnQueueSnapshot(address, contract, optionalValues.littlePool, provider);
 
   const ownerRaw = optionalValues.owner;
 
@@ -589,6 +801,7 @@ async function readTokenProfileFresh(address) {
     extras,
     addressLinks,
     optionalValuesRaw: optionalValues,
+    returnQueue,
     contractPriceUsd: Number.isFinite(contractPriceUsd) && contractPriceUsd > 0 ? contractPriceUsd : NaN,
     rpcUrl: url,
     checkedAt: new Date(),

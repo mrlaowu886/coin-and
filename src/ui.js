@@ -680,6 +680,7 @@ function summarizeParts(parts) {
 
 function buildAdvancedProtocolState(profile, pair) {
   const optional = profile?.optionalValuesRaw || {};
+  const returnQueue = profile?.returnQueue || null;
   const totalNodesRaw = toBigIntValue(optional.totalNodes);
   const lastTotalLpRaw = toBigIntValue(optional.lastTotalLP);
   const globalIndexRaw = toBigIntValue(optional.globalIndex);
@@ -703,7 +704,7 @@ function buildAdvancedProtocolState(profile, pair) {
   const flags = {
     nodeRewards: totalNodesRaw !== null || globalNodeIndexRaw !== null,
     lpRewards: lastTotalLpRaw !== null || globalIndexRaw !== null,
-    queue: queueLenRaw !== null || currentIdxRaw !== null,
+    queue: queueLenRaw !== null || currentIdxRaw !== null || Boolean(returnQueue?.supported),
     thresholds:
       ownLpRaw !== null ||
       directAccumulationRaw !== null ||
@@ -913,11 +914,142 @@ function buildAdvancedProtocolState(profile, pair) {
 
   return {
     supported: true,
-    supportsAddressAnalyzer: flags.nodeRewards || flags.lpRewards,
+    supportsAddressAnalyzer: flags.nodeRewards || flags.lpRewards || Boolean(returnQueue?.supported),
     note: t("advanced.note", { summary: summarizeParts(noteParts) }, summarizeParts(noteParts)),
     overviewItems,
     mechanicsItems,
   };
+}
+
+function buildReturnQueueState(profile) {
+  const queue = profile?.returnQueue;
+  if (!queue?.supported) {
+    return null;
+  }
+
+  const decimals = Number(profile?.decimals || 18);
+  const coveragePercent = safeNumber(queue.coveragePercent);
+  const remainingEntriesRaw = toBigIntValue(queue.remainingEntriesRaw);
+  const currentIdxRaw = toBigIntValue(queue.currentIdxRaw);
+  const queueLenRaw = toBigIntValue(queue.queueLenRaw);
+  const currentCursorValue =
+    currentIdxRaw !== null && queueLenRaw !== null
+      ? `${formatNumber(Number(currentIdxRaw), 0)} / ${formatNumber(Number(queueLenRaw), 0)}`
+      : currentIdxRaw !== null
+        ? formatNumber(Number(currentIdxRaw), 0)
+        : queueLenRaw !== null
+          ? formatNumber(Number(queueLenRaw), 0)
+          : "--";
+
+  const noteParts = [
+    t("advanced.queueFlowNote", {}, "A public return-queue pool was detected for this token."),
+  ];
+  if (Number.isFinite(coveragePercent)) {
+    noteParts.push(
+      t(
+        "advanced.queueCoverageSummary",
+        { coverage: formatPercent(coveragePercent) },
+        `Current pool balance covers about ${formatPercent(coveragePercent)} of the visible queue.`,
+      ),
+    );
+  }
+
+  return {
+    note: summarizeParts(noteParts),
+    items: [
+      {
+        label: t("advanced.returnPoolBalance", {}, "Return Pool Balance"),
+        value: queue.poolBalanceRaw !== null ? formatUnitsValue(queue.poolBalanceRaw, decimals) : "--",
+        note: queue.address ? shortAddress(queue.address) : "",
+        mono: false,
+        visible: queue.poolBalanceRaw !== null,
+      },
+      {
+        label: t("advanced.queuePendingTotal", {}, "Queued Return Total"),
+        value: queue.totalPendingRaw !== null ? formatUnitsValue(queue.totalPendingRaw, decimals) : "--",
+        note: "amountBefore(0x0)",
+        visible: queue.totalPendingRaw !== null,
+      },
+      {
+        label: t("advanced.queueActiveEntries", {}, "Active Queue Entries"),
+        value: remainingEntriesRaw !== null ? formatNumber(Number(remainingEntriesRaw), 0) : "--",
+        note: t("advanced.queueActiveEntriesNote", {}, "queueLen() - currentIdx()"),
+        visible: remainingEntriesRaw !== null,
+      },
+      {
+        label: t("advanced.queueCursor", {}, "Queue Cursor"),
+        value: currentCursorValue,
+        note: summarizeParts([
+          currentIdxRaw !== null ? "currentIdx()" : "",
+          queueLenRaw !== null ? "queueLen()" : "",
+        ]),
+        visible: currentIdxRaw !== null || queueLenRaw !== null,
+      },
+      {
+        label: t("advanced.currentQueueRecipient", {}, "Current Queue Recipient"),
+        value: queue.headAddress || "--",
+        note: queue.headAddress ? "addressQueue(currentIdx)" : "",
+        mono: true,
+        visible: Boolean(queue.headAddress),
+      },
+      {
+        label: t("advanced.currentQueueAmount", {}, "Current Queue Amount"),
+        value: queue.headRemainingRaw !== null ? formatUnitsValue(queue.headRemainingRaw, decimals) : "--",
+        note:
+          queue.headRemainingRaw !== null
+            ? t("advanced.currentQueueAmountNote", {}, "Remaining amount after claimedQueue(currentIdx)")
+            : "",
+        visible: queue.headRemainingRaw !== null,
+      },
+      {
+        label: t("advanced.queueCoverage", {}, "Queue Coverage"),
+        value: Number.isFinite(coveragePercent) ? formatPercent(coveragePercent) : "--",
+        note: t("advanced.queueCoverageNote", {}, "Return pool balance compared with the visible queued total"),
+        visible: Number.isFinite(coveragePercent),
+      },
+      {
+        label: t("advanced.queueBatchCap", {}, "Claim Loop Cap"),
+        value: queue.maxLoopRaw !== null ? formatNumber(Number(queue.maxLoopRaw), 0) : "--",
+        note: queue.maxLoopRaw !== null ? "MAX_LOOP()" : "",
+        visible: queue.maxLoopRaw !== null,
+      },
+      {
+        label: t("advanced.queueToken", {}, "Queue Token"),
+        value:
+          queue.queueMatchesToken
+            ? t("advanced.queueTokenMatch", {}, "Matches queried token")
+            : queue.queueToken || "--",
+        note: queue.queueToken ? "token()" : "",
+        mono: !queue.queueMatchesToken && Boolean(queue.queueToken),
+        visible: Boolean(queue.queueToken) || queue.queueMatchesToken === false,
+      },
+    ],
+  };
+}
+
+function getReturnQueueStatusLabel(snapshot) {
+  if (!snapshot?.returnQueueAheadRaw && snapshot?.returnQueueAheadRaw !== 0n) {
+    return "";
+  }
+
+  if (snapshot.returnQueueIsHead) {
+    return t("advanced.queueStatusHead", {}, "At the queue head");
+  }
+
+  if (snapshot.returnQueueActive) {
+    return t("advanced.queueStatusWaiting", {}, "Queued and waiting");
+  }
+
+  return t("advanced.queueStatusNone", {}, "No active queue entry found");
+}
+
+function getReturnQueueCountDisplay(value, truncated) {
+  if (!Number.isFinite(value)) {
+    return "--";
+  }
+
+  const formatted = formatNumber(value, 0);
+  return truncated ? `>= ${formatted}` : formatted;
 }
 
 function buildAdvancedAddressItems(snapshot, profile) {
@@ -997,21 +1129,76 @@ function buildAdvancedAddressItems(snapshot, profile) {
       mono: true,
       visible: Boolean(snapshot?.referrer),
     },
+    {
+      label: t("advanced.returnQueueStatus", {}, "Return Queue Status"),
+      value: getReturnQueueStatusLabel(snapshot),
+      note: snapshot?.returnQueueAheadRaw !== null ? "amountBefore(address)" : "",
+      visible: snapshot?.returnQueueAheadRaw !== null,
+    },
+    {
+      label: t("advanced.returnQueueAhead", {}, "Queue Ahead"),
+      value: snapshot?.returnQueueAheadRaw !== null ? formatUnitsValue(snapshot.returnQueueAheadRaw, decimals) : "--",
+      note: snapshot?.returnQueueAheadRaw !== null ? t("advanced.returnQueueAheadNote", {}, "Visible queued amount in front of this address") : "",
+      visible: snapshot?.returnQueueAheadRaw !== null && snapshot?.returnQueueActive,
+    },
+    {
+      label: t("advanced.returnQueueAheadAddresses", {}, "Addresses Ahead"),
+      value: getReturnQueueCountDisplay(snapshot?.returnQueueAheadAddressCount, snapshot?.returnQueueScanTruncated),
+      note:
+        snapshot?.returnQueueAheadAddressCount !== null
+          ? snapshot?.returnQueueScanTruncated
+            ? t(
+                "advanced.returnQueueAheadAddressesPartial",
+                { count: formatNumber(snapshot?.returnQueueScannedEntriesCount || 0, 0) },
+                `Scanned the first ${formatNumber(snapshot?.returnQueueScannedEntriesCount || 0, 0)} visible queue entries`,
+              )
+            : t("advanced.returnQueueAheadAddressesNote", {}, "Unique visible addresses in front of this address")
+          : "",
+      visible: snapshot?.returnQueueAheadAddressCount !== null && snapshot?.returnQueueActive,
+    },
+    {
+      label: t("advanced.returnQueueAheadEntries", {}, "Queue Entries Ahead"),
+      value: getReturnQueueCountDisplay(snapshot?.returnQueueAheadEntryCount, snapshot?.returnQueueScanTruncated),
+      note:
+        snapshot?.returnQueueAheadEntryCount !== null
+          ? snapshot?.returnQueueScanTruncated
+            ? t(
+                "advanced.returnQueueAheadEntriesPartial",
+                { count: formatNumber(snapshot?.returnQueueScannedEntriesCount || 0, 0) },
+                `Only the first ${formatNumber(snapshot?.returnQueueScannedEntriesCount || 0, 0)} visible entries have been scanned`,
+              )
+            : t("advanced.returnQueueAheadEntriesNote", {}, "Visible queue entries in front of this address")
+          : "",
+      visible: snapshot?.returnQueueAheadEntryCount !== null && snapshot?.returnQueueActive,
+    },
+    {
+      label: t("advanced.returnQueueGap", {}, "Coverage Gap"),
+      value: snapshot?.returnQueueGapRaw !== null ? formatUnitsValue(snapshot.returnQueueGapRaw, decimals) : "--",
+      note:
+        snapshot?.returnQueueGapRaw !== null
+          ? t("advanced.returnQueueGapNote", {}, "Additional tokens needed before the current pool balance reaches this address's slot")
+          : "",
+      visible: snapshot?.returnQueueGapRaw !== null && snapshot?.returnQueueActive,
+    },
   ];
 }
 
 function renderAdvanced(profile, pair, addressSnapshot) {
   const advanced = buildAdvancedProtocolState(profile, pair);
+  const returnQueue = buildReturnQueueState(profile);
 
   if (!advanced) {
     setVisible("advanced-section", false);
     setVisible("advanced-nav-link", false);
+    setVisible("advanced-queue-panel", false);
     setVisible("advanced-address-panel", false);
     setVisible("advanced-address-grid", false);
     setText("advanced-note", t("advanced.waiting", {}, "Waiting for advanced protocol fields"));
+    setText("advanced-queue-note", t("advanced.queueWaiting", {}, "Waiting for a public return queue snapshot"));
     setText("advanced-address-note", t("advanced.addressPrompt", {}, "Enter a wallet address to read public protocol-side reward fields."));
     setHtml("advanced-grid", "");
     setHtml("advanced-mechanics", "");
+    setHtml("advanced-queue-grid", "");
     setHtml("advanced-address-grid", "");
     return;
   }
@@ -1021,6 +1208,15 @@ function renderAdvanced(profile, pair, addressSnapshot) {
   setText("advanced-note", advanced.note);
   setHtml("advanced-grid", buildStatItems(advanced.overviewItems));
   setHtml("advanced-mechanics", buildStatItems(advanced.mechanicsItems));
+
+  setVisible("advanced-queue-panel", Boolean(returnQueue));
+  if (returnQueue) {
+    setText("advanced-queue-note", returnQueue.note);
+    setHtml("advanced-queue-grid", buildStatItems(returnQueue.items));
+  } else {
+    setText("advanced-queue-note", t("advanced.queueWaiting", {}, "Waiting for a public return queue snapshot"));
+    setHtml("advanced-queue-grid", "");
+  }
 
   const addressPanelVisible = advanced.supportsAddressAnalyzer;
   setVisible("advanced-address-panel", addressPanelVisible);
@@ -1103,6 +1299,7 @@ function resetDisplay() {
   setHtml("insight-list", "");
   setHtml("advanced-grid", "");
   setHtml("advanced-mechanics", "");
+  setHtml("advanced-queue-grid", "");
   setHtml("advanced-address-grid", "");
 
   setWidth("buy-bar", 0);
@@ -1124,6 +1321,7 @@ function resetDisplay() {
   setVisible("market-detail-panel", true);
   setVisible("advanced-section", false);
   setVisible("advanced-nav-link", false);
+  setVisible("advanced-queue-panel", false);
   setVisible("advanced-address-panel", false);
   setVisible("advanced-address-grid", false);
 
@@ -1138,6 +1336,7 @@ function resetDisplay() {
   setTitle("summary-liquidity", "");
   setTitle("summary-marketcap", "");
   setText("advanced-note", t("advanced.waiting", {}, "Waiting for advanced protocol fields"));
+  setText("advanced-queue-note", t("advanced.queueWaiting", {}, "Waiting for a public return queue snapshot"));
   setText("advanced-address-note", t("advanced.addressPrompt", {}, "Enter a wallet address to read public protocol-side reward fields."));
   if ($("advanced-address-input")) {
     $("advanced-address-input").value = "";

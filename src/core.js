@@ -80,6 +80,17 @@ const OPTIONAL_ABI = [
   "function referee(address) view returns (address)",
 ];
 
+const RETURN_QUEUE_ABI = [
+  "function token() view returns (address)",
+  "function queueLen() view returns (uint256)",
+  "function currentIdx() view returns (uint256)",
+  "function amountBefore(address) view returns (uint256)",
+  "function amountQueue(uint256) view returns (uint256)",
+  "function addressQueue(uint256) view returns (address)",
+  "function claimedQueue(uint256) view returns (uint256)",
+  "function MAX_LOOP() view returns (uint256)",
+];
+
 const I18N_CONFIG = window.TOKEN_DASHBOARD_I18N || {
   defaultLocale: "en",
   storageKey: "token-dashboard-language",
@@ -903,6 +914,7 @@ export {
   RPC_ENDPOINTS,
   ERC20_ABI,
   OPTIONAL_ABI,
+  RETURN_QUEUE_ABI,
   I18N_CONFIG,
   DEFAULT_LANGUAGE_PREFERENCE,
   RTL_LOCALES,

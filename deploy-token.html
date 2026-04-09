@@ -1,0 +1,569 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ContributionToken 部署（BSC）</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #172244;
+      --line: #28417a;
+      --text: #eaf0ff;
+      --muted: #9fb2d4;
+      --btn: #2f6fed;
+      --btn-hover: #275ed1;
+      --ok: #4cd97b;
+      --warn: #f0b429;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1100px 650px at 20% 0%, #1d2f5e 0%, transparent 60%),
+        linear-gradient(180deg, var(--bg), #070a13);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+    .card {
+      width: min(920px, 100%);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #16264d 0%, #111b36 100%);
+      box-shadow: 0 20px 70px rgba(0,0,0,.45);
+      padding: 20px;
+      display: grid;
+      gap: 14px;
+    }
+    h1 { margin: 0; font-size: 26px; }
+    .sub { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(230px,1fr)); gap: 10px; }
+    .panel { border: 1px solid var(--line); border-radius: 12px; padding: 12px; background: rgba(12,20,42,.78); }
+    .label { margin: 0 0 6px; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+    .value { margin: 0; font-size: 14px; font-weight: 600; word-break: break-all; }
+    input, button {
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--panel);
+    }
+    input { flex: 1 1 280px; min-width: 220px; }
+    button {
+      border: none;
+      background: var(--btn);
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button:hover { background: var(--btn-hover); }
+    button.secondary { background: #31487d; }
+    button.secondary:hover { background: #2b3f6e; }
+    button:disabled { opacity: .65; cursor: not-allowed; }
+    .status { display: inline-flex; gap: 8px; align-items: center; border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px; color: var(--muted); }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #7788af; }
+    .dot.ok { background: var(--ok); }
+    .dot.warn { background: var(--warn); }
+    .mono { font-family: Consolas, Menlo, Monaco, monospace; }
+    .log {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(11,18,38,.86);
+      color: #c9d7f8;
+      padding: 12px;
+      min-height: 140px;
+      white-space: pre-wrap;
+      font-family: Consolas, Menlo, Monaco, monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>ContributionToken 一键部署（BSC 主网）</h1>
+    <p class="sub">此页面会先部署实现合约，再部署 UUPS 代理并调用 initialize。最终使用的是“代理地址”。</p>
+
+    <div class="row">
+      <button id="connectBtn">连接钱包</button>
+      <button id="diagnoseBtn" class="secondary">诊断</button>
+      <button id="switchBtn" class="secondary">切换到 BSC</button>
+      <span id="walletStatus" class="status"><span class="dot warn"></span>未连接</span>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <p class="label">当前地址</p>
+        <p id="accountValue" class="value mono">-</p>
+      </div>
+      <div class="panel">
+        <p class="label">当前网络</p>
+        <p id="chainValue" class="value mono">-</p>
+      </div>
+    </div>
+
+    <div class="row">
+      <input id="nameInput" type="text" value="随便测试1号" placeholder="Token Name" />
+      <input id="symbolInput" type="text" value="CACP" placeholder="Token Symbol" />
+      <input id="adminInput" type="text" placeholder="Admin (默认当前连接地址)" />
+    </div>
+
+    <div class="row">
+      <button id="deployBtn">开始部署（实现 + 代理）</button>
+      <button id="copyProxyBtn" class="secondary">复制代理地址</button>
+      <button id="openAppBtn" class="secondary">打开主页面并带入地址</button>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <p class="label">实现合约地址</p>
+        <p id="implValue" class="value mono">-</p>
+      </div>
+      <div class="panel">
+        <p class="label">代理合约地址（主地址）</p>
+        <p id="proxyValue" class="value mono">-</p>
+      </div>
+    </div>
+
+    <pre id="logBox" class="log">Ready.</pre>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+  <script>
+    const BSC_CHAIN_ID = "0x38";
+    const BSC_PARAMS = {
+      chainId: "0x38",
+      chainName: "BNB Smart Chain Mainnet",
+      nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
+      rpcUrls: ["https://bsc-dataseed.binance.org"],
+      blockExplorerUrls: ["https://bscscan.com"]
+    };
+    const CONTRACT_KEY = "wallet-connect:contribution-contract";
+
+    const connectBtn = document.getElementById("connectBtn");
+    const diagnoseBtn = document.getElementById("diagnoseBtn");
+    const switchBtn = document.getElementById("switchBtn");
+    const deployBtn = document.getElementById("deployBtn");
+    const copyProxyBtn = document.getElementById("copyProxyBtn");
+    const openAppBtn = document.getElementById("openAppBtn");
+
+    const walletStatus = document.getElementById("walletStatus");
+    const accountValue = document.getElementById("accountValue");
+    const chainValue = document.getElementById("chainValue");
+
+    const nameInput = document.getElementById("nameInput");
+    const symbolInput = document.getElementById("symbolInput");
+    const adminInput = document.getElementById("adminInput");
+
+    const implValue = document.getElementById("implValue");
+    const proxyValue = document.getElementById("proxyValue");
+    const logBox = document.getElementById("logBox");
+
+    let injected = null;
+    let browserProvider = null;
+    let signer = null;
+    let account = "";
+    let chainId = "";
+    let deployArtifacts = null;
+    let deployedProxy = "";
+    let providerName = "";
+    let providerEventsBound = false;
+    const eip6963Providers = new Map();
+    let eipDiscoveryReady = false;
+    let eipListenerAttached = false;
+    let lastCandidateSummary = "";
+
+    function log(msg) {
+      const t = new Date().toLocaleTimeString();
+      logBox.textContent = `[${t}] ${msg}\n` + logBox.textContent;
+    }
+
+    function setStatus(connected) {
+      const text = connected
+        ? (providerName ? `已连接（${providerName}）` : "已连接")
+        : "未连接";
+      walletStatus.innerHTML = `<span class="dot ${connected ? "ok" : "warn"}"></span>${text}`;
+    }
+
+    function updateUi() {
+      accountValue.textContent = account || "-";
+      chainValue.textContent = chainId || "-";
+      if (!adminInput.value && account) {
+        adminInput.value = account;
+      }
+      copyProxyBtn.disabled = !deployedProxy;
+      openAppBtn.disabled = !deployedProxy;
+      setStatus(Boolean(account));
+    }
+
+    function getProviderName(providerItem, info = null) {
+      if (info && info.name) return info.name;
+      if (!providerItem) return "Unknown";
+      if (providerItem.isMetaMask) return "MetaMask";
+      if (providerItem.isRabby) return "Rabby";
+      if (providerItem.isOkxWallet || providerItem.isOKExWallet) return "OKX Wallet";
+      if (providerItem.isBitKeep || providerItem.isBitgetWallet) return "Bitget Wallet";
+      if (providerItem.isCoinbaseWallet) return "Coinbase Wallet";
+      if (providerItem.isTrust || providerItem.isTrustWallet) return "Trust Wallet";
+      return "Injected EVM Wallet";
+    }
+
+    function setupEip6963Discovery() {
+      if (eipDiscoveryReady && eipListenerAttached) return;
+      eipDiscoveryReady = true;
+      if (!eipListenerAttached) {
+        window.addEventListener("eip6963:announceProvider", (event) => {
+          const detail = event && event.detail ? event.detail : null;
+          if (!detail || !detail.provider) return;
+          const info = detail.info || {};
+          const key = info.uuid || `${info.rdns || "unknown"}:${info.name || "wallet"}`;
+          if (!eip6963Providers.has(key)) {
+            eip6963Providers.set(key, { provider: detail.provider, info });
+          }
+        });
+        eipListenerAttached = true;
+      }
+      window.dispatchEvent(new Event("eip6963:requestProvider"));
+    }
+
+    function pushCandidate(all, seen, provider, source, info = null) {
+      if (!provider || seen.has(provider)) return;
+      seen.add(provider);
+      all.push({
+        provider,
+        source,
+        info,
+        name: getProviderName(provider, info)
+      });
+    }
+
+    function collectProviderCandidates() {
+      const all = [];
+      const seen = new Set();
+
+      if (window.ethereum) {
+        const injectedProviders = Array.isArray(window.ethereum.providers) && window.ethereum.providers.length
+          ? window.ethereum.providers
+          : [window.ethereum];
+        injectedProviders.forEach((item) => {
+          pushCandidate(all, seen, item, "injected");
+        });
+      }
+
+      const globals = [
+        { provider: window.okxwallet && window.okxwallet.ethereum, source: "okx" },
+        { provider: window.BinanceChain, source: "binance" },
+        { provider: window.binanceChain, source: "binance" },
+        { provider: window.coinbaseWalletExtension, source: "coinbase" }
+      ];
+      globals.forEach((entry) => pushCandidate(all, seen, entry.provider, entry.source));
+
+      eip6963Providers.forEach((entry) => {
+        pushCandidate(all, seen, entry.provider, "eip6963", entry.info);
+      });
+
+      lastCandidateSummary = all.length
+        ? all.map((item) => `${item.name}[${item.source}]`).join(", ")
+        : "none";
+      return all;
+    }
+
+    function describeCandidates(candidates) {
+      if (!candidates || !candidates.length) return "none";
+      return candidates.map((item) => `${item.name}[${item.source}]`).join(", ");
+    }
+
+    function candidatePriority(item) {
+      if (!item || !item.provider) return -999;
+      let score = 0;
+      if (item.provider.isMetaMask) score += 100;
+      if (item.source === "injected") score += 20;
+      if (item.source === "eip6963") score += 10;
+      if (typeof item.provider.request !== "function") score -= 1000;
+      return score;
+    }
+
+    function pickBestProvider() {
+      const candidates = collectProviderCandidates();
+      if (!candidates.length) return null;
+      const sorted = [...candidates].sort((a, b) => candidatePriority(b) - candidatePriority(a));
+      const metamask = sorted.find((item) =>
+        (item.provider && item.provider.isMetaMask)
+        || String(item.info && item.info.rdns ? item.info.rdns : "").toLowerCase().includes("metamask")
+      );
+      const chosenEntry = metamask || sorted[0];
+      return { chosen: chosenEntry.provider, chosenEntry, candidates: sorted };
+    }
+
+    async function waitForProvider(timeoutMs = 12000) {
+      setupEip6963Discovery();
+      const immediate = pickBestProvider();
+      if (immediate) return immediate;
+
+      return await new Promise((resolve) => {
+        let done = false;
+        const finalize = (result) => {
+          if (done) return;
+          done = true;
+          window.removeEventListener("ethereum#initialized", onInit);
+          window.removeEventListener("eip6963:announceProvider", onAnnounce);
+          clearTimeout(timer);
+          resolve(result);
+        };
+        const onInit = () => finalize(pickBestProvider());
+        const onAnnounce = () => finalize(pickBestProvider());
+
+        window.addEventListener("ethereum#initialized", onInit, { once: true });
+        window.addEventListener("eip6963:announceProvider", onAnnounce);
+        window.dispatchEvent(new Event("eip6963:requestProvider"));
+        setTimeout(() => window.dispatchEvent(new Event("eip6963:requestProvider")), 300);
+        const timer = setTimeout(() => finalize(pickBestProvider()), timeoutMs);
+      });
+    }
+
+    function bindProviderEvents() {
+      if (!injected || !injected.on || providerEventsBound) return;
+      injected.on("accountsChanged", () => void refreshAccount());
+      injected.on("chainChanged", () => void refreshAccount());
+      providerEventsBound = true;
+    }
+
+    async function ensureProvider() {
+      const picked = await waitForProvider();
+      if (!picked) {
+        const origin = window.location && window.location.origin ? window.location.origin : "unknown";
+        throw new Error(`未找到注入钱包。origin=${origin}; candidates=${lastCandidateSummary}. 请确认使用 http://127.0.0.1:8080 打开并解锁钱包。`);
+      }
+
+      const candidates = picked.candidates && picked.candidates.length
+        ? picked.candidates
+        : collectProviderCandidates();
+      let lastError = null;
+      let selected = null;
+      for (const item of candidates) {
+        if (!item || !item.provider || typeof item.provider.request !== "function") continue;
+        try {
+          await item.provider.request({ method: "eth_chainId" });
+          selected = item;
+          break;
+        } catch (e) {
+          lastError = e;
+        }
+      }
+      if (!selected) {
+        const message = lastError && (lastError.message || lastError.shortMessage)
+          ? `${lastError.message || lastError.shortMessage}`
+          : "unknown";
+        throw new Error(`检测到钱包候选但不可用。candidates=${describeCandidates(candidates)}; lastError=${message}`);
+      }
+
+      injected = selected.provider;
+      providerName = selected.name || "Wallet";
+      if (!window.ethers || typeof ethers.BrowserProvider !== "function") {
+        throw new Error("ethers 库加载失败，请刷新页面后重试。");
+      }
+      browserProvider = new ethers.BrowserProvider(injected);
+      bindProviderEvents();
+    }
+
+    async function refreshAccount() {
+      if (!injected) {
+        try {
+          await ensureProvider();
+        } catch (e) {
+          updateUi();
+          return;
+        }
+      }
+      const accounts = await injected.request({ method: "eth_accounts" });
+      account = accounts[0] || "";
+      chainId = await injected.request({ method: "eth_chainId" });
+      updateUi();
+    }
+
+    async function connectWallet() {
+      await ensureProvider();
+      await injected.request({ method: "eth_requestAccounts" });
+      await refreshAccount();
+      log(`钱包已连接：${providerName}`);
+    }
+
+    function diagnose() {
+      setupEip6963Discovery();
+      const origin = window.location && window.location.origin ? window.location.origin : "unknown";
+      log(`诊断 origin=${origin}; secure=${window.isSecureContext}`);
+      if (window.location.protocol === "file:") {
+        log("你正在 file:// 打开页面，插件通常不会注入钱包。请改用 http://127.0.0.1:8080/deploy-token.html");
+      }
+      const candidates = collectProviderCandidates();
+      if (!window.ethereum) {
+        log("window.ethereum = none");
+      } else {
+        const providersCount = Array.isArray(window.ethereum.providers) ? window.ethereum.providers.length : 1;
+        log(`window.ethereum = present; providers=${providersCount}`);
+      }
+      log(`ethers: ${window.ethers && typeof ethers.BrowserProvider === "function" ? "ok" : "missing"}`);
+      log(`candidates: ${describeCandidates(candidates)}`);
+    }
+
+    async function switchToBsc() {
+      await ensureProvider();
+      try {
+        await injected.request({ method: "wallet_switchEthereumChain", params: [{ chainId: BSC_CHAIN_ID }] });
+      } catch (e) {
+        if (e && e.code === 4902) {
+          await injected.request({ method: "wallet_addEthereumChain", params: [BSC_PARAMS] });
+        } else {
+          throw e;
+        }
+      }
+      await refreshAccount();
+      log("已切换到 BSC 主网。");
+    }
+
+    function requireReadyToDeploy() {
+      if (!deployArtifacts) throw new Error("部署产物未加载");
+      if (!account) throw new Error("请先连接钱包");
+      if (chainId.toLowerCase() !== BSC_CHAIN_ID) throw new Error("请先切换到 BSC 主网");
+      const name = nameInput.value.trim();
+      const symbol = symbolInput.value.trim();
+      const admin = (adminInput.value.trim() || account).trim();
+      if (!name) throw new Error("Token Name 不能为空");
+      if (!symbol) throw new Error("Token Symbol 不能为空");
+      const adminAddr = ethers.getAddress(admin);
+      return { name, symbol, admin: adminAddr };
+    }
+
+    async function deployAll() {
+      const cfg = requireReadyToDeploy();
+      signer = await browserProvider.getSigner();
+
+      deployBtn.disabled = true;
+      try {
+        log("开始部署实现合约 ContributionToken...");
+        const implFactory = new ethers.ContractFactory(
+          deployArtifacts.contributionToken.abi,
+          deployArtifacts.contributionToken.bytecode,
+          signer
+        );
+        const impl = await implFactory.deploy();
+        log(`实现合约交易已提交: ${impl.deploymentTransaction().hash}`);
+        await impl.waitForDeployment();
+        const implAddress = await impl.getAddress();
+        implValue.textContent = implAddress;
+        log(`实现合约部署完成: ${implAddress}`);
+
+        log("编码 initialize(name, symbol, admin)...");
+        const initData = impl.interface.encodeFunctionData("initialize", [cfg.name, cfg.symbol, cfg.admin]);
+
+        log("开始部署代理合约 ContributionProxy...");
+        const proxyFactory = new ethers.ContractFactory(
+          deployArtifacts.contributionProxy.abi,
+          deployArtifacts.contributionProxy.bytecode,
+          signer
+        );
+        const proxy = await proxyFactory.deploy(implAddress, initData);
+        log(`代理合约交易已提交: ${proxy.deploymentTransaction().hash}`);
+        await proxy.waitForDeployment();
+        const proxyAddress = await proxy.getAddress();
+        deployedProxy = proxyAddress;
+        proxyValue.textContent = proxyAddress;
+
+        localStorage.setItem(CONTRACT_KEY, proxyAddress);
+        log(`代理合约部署完成: ${proxyAddress}`);
+        log("已自动写入本地合约地址，可直接回主页面领取。\n部署完成。");
+      } catch (err) {
+        log(`部署失败: ${err?.shortMessage || err?.message || String(err)}`);
+      } finally {
+        deployBtn.disabled = false;
+        updateUi();
+      }
+    }
+
+    async function copyProxyAddress() {
+      if (!deployedProxy) return;
+      try {
+        await navigator.clipboard.writeText(deployedProxy);
+        log("代理地址已复制。")
+      } catch (e) {
+        log("复制失败。")
+      }
+    }
+
+    function openMainPage() {
+      if (!deployedProxy) return;
+      const url = new URL("./index.html", window.location.href);
+      url.searchParams.set("contract", deployedProxy);
+      window.open(url.toString(), "_blank");
+    }
+
+    function normalizeAbi(rawAbi) {
+      if (Array.isArray(rawAbi)) return rawAbi;
+      if (rawAbi && Array.isArray(rawAbi.value)) return rawAbi.value;
+      if (rawAbi && rawAbi.value && Array.isArray(rawAbi.value.value)) return rawAbi.value.value;
+      throw new Error("部署产物 abi 格式无效");
+    }
+
+    function normalizeBytecode(rawBytecode) {
+      if (typeof rawBytecode === "string") {
+        return rawBytecode.startsWith("0x") ? rawBytecode : `0x${rawBytecode}`;
+      }
+      if (rawBytecode && typeof rawBytecode.object === "string") {
+        return rawBytecode.object.startsWith("0x") ? rawBytecode.object : `0x${rawBytecode.object}`;
+      }
+      if (rawBytecode && typeof rawBytecode.value === "string") {
+        return rawBytecode.value.startsWith("0x") ? rawBytecode.value : `0x${rawBytecode.value}`;
+      }
+      throw new Error("部署产物 bytecode 格式无效");
+    }
+
+    function normalizeContractArtifact(raw, label) {
+      if (!raw || typeof raw !== "object") {
+        throw new Error(`${label} 合约产物缺失`);
+      }
+      const abi = normalizeAbi(raw.abi);
+      const bytecode = normalizeBytecode(raw.bytecode);
+      if (!bytecode || bytecode.length < 4) {
+        throw new Error(`${label} bytecode 为空`);
+      }
+      return { abi, bytecode };
+    }
+
+    async function loadArtifacts() {
+      const res = await fetch("./artifacts/deployment-artifacts.json", { cache: "no-store" });
+      if (!res.ok) throw new Error("无法加载部署产物 JSON");
+      const raw = await res.json();
+      deployArtifacts = {
+        contributionToken: normalizeContractArtifact(raw.contributionToken, "ContributionToken"),
+        contributionProxy: normalizeContractArtifact(raw.contributionProxy, "ContributionProxy")
+      };
+      log(`部署产物已加载。implAbi=${deployArtifacts.contributionToken.abi.length} proxyAbi=${deployArtifacts.contributionProxy.abi.length}`);
+    }
+
+    connectBtn.addEventListener("click", () => {
+      connectWallet().catch((e) => {
+        log(`连接失败: ${e?.shortMessage || e?.message || String(e)}`);
+      });
+    });
+    diagnoseBtn.addEventListener("click", diagnose);
+    switchBtn.addEventListener("click", () => void switchToBsc());
+    deployBtn.addEventListener("click", () => void deployAll());
+    copyProxyBtn.addEventListener("click", () => void copyProxyAddress());
+    openAppBtn.addEventListener("click", openMainPage);
+
+    copyProxyBtn.disabled = true;
+    openAppBtn.disabled = true;
+    updateUi();
+    loadArtifacts().catch((e) => log(`加载失败: ${e.message}`));
+    diagnose();
+    refreshAccount().catch(() => {});
+  </script>
+</body>
+</html>
+
